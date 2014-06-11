@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by Roy on 2014/6/10.
  */
-public class WildCardComparator implements MatcherInterface<String, String>
+public class WildCardComparator implements MatcherInterface<String>
 {
     private static final char ALL_WILD = '*';
     private static final char SINGLE_WILD = '?';

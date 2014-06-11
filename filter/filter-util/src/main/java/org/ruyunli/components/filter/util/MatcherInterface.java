@@ -3,7 +3,7 @@ package org.ruyunli.components.filter.util;
 /**
  * Created by Roy on 2014/6/10.
  */
-public interface MatcherInterface<K,T>
+public interface MatcherInterface<C>
 {
-    boolean match(K value, T pattern);
+    boolean match(C value, C pattern);
 }
