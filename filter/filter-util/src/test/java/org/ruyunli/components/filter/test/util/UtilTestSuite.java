@@ -11,7 +11,7 @@ public class UtilTestSuite extends TestSuite
     public static void main(String[] argv)
     {
         UtilTestSuite suite =  new UtilTestSuite();
-        suite.addTest(new WildCardComparatorTestCase());
+        suite.addTest(new DefaultWildCardComparatorTestCase());
 
         TestRunner.run(suite);
     }

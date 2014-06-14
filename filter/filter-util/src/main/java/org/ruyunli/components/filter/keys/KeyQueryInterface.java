@@ -2,6 +2,8 @@ package org.ruyunli.components.filter.keys;
 
 import org.ruyunli.components.filter.util.MatcherInterface;
 
+import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -11,6 +13,6 @@ public interface KeyQueryInterface<C, K extends AbstractKey<C>>
 {
     Vector<C> getComponents();
     boolean match(K key);
-    MatcherInterface<C> getMatcher();
-    void setMatcher(MatcherInterface<C> s);
+    List<K> match(Set<K> keys);
+    List<K> match(List<K> keys);
 }

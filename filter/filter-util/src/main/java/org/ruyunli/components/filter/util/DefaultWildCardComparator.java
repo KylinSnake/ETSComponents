@@ -1,15 +1,19 @@
 package org.ruyunli.components.filter.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.ruyunli.components.filter.exceptions.KeyParseException;
+
+import java.util.*;
 
 /**
  * Created by Roy on 2014/6/10.
  */
-public class WildCardComparator implements MatcherInterface<String>
+public class DefaultWildCardComparator
+        implements MatcherInterface<String>, KeyParserInterface<String, String>
 {
     private static final char ALL_WILD = '*';
     private static final char SINGLE_WILD = '?';
+    private static final String KEY_DELIM = ".";
+    private static final String INVALID_REG = "\\.;:";
 
     private static void MatchWithAllWildcardWithOverlay(
             char[] s, char[] pattern, int[] overlay_value, int sBegin, int pBegin,
@@ -218,9 +222,81 @@ public class WildCardComparator implements MatcherInterface<String>
         return s.equals(pattern);
     }
 
+
     @Override
     public boolean match(String value, String pattern)
     {
         return wildMatch(value, pattern);
+    }
+
+    private List<String> matchIterator(Iterator<String> it, String p)
+    {
+        ArrayList<String> ret = new ArrayList<String>();
+        while(it.hasNext())
+        {
+            String s = it.next();
+            if(match(s,p))
+            {
+                ret.add(s);
+            }
+        }
+        return ret;
+    }
+
+    @Override
+    public List<String> match(Set<String> values, String pattern)
+    {
+        if(values.contains(pattern))
+        {
+            ArrayList<String> ret = new ArrayList<String>();
+            ret.add(pattern);
+            return ret;
+        }
+        return matchIterator(values.iterator(), pattern);
+    }
+
+    @Override
+    public List<String> match(List<String> values, String pattern)
+    {
+        return matchIterator(values.iterator(), pattern);
+    }
+
+    @Override
+    public Vector<String> parseKeyComponents(String s) throws KeyParseException
+    {
+        if(s.contains(INVALID_REG) ||
+                containsAllWildCard(s) || containsSingleWildCard(s))
+        {
+            throw new KeyParseException(s);
+        }
+        return parse(s);
+    }
+
+    @Override
+    public Vector<String> parseQueryComponents(String s) throws KeyParseException
+    {
+        if(s.contains(INVALID_REG))
+        {
+            throw new KeyParseException(s);
+        }
+        return parse(s);
+    }
+
+    private static Vector<String> parse(String s) throws KeyParseException
+    {
+        Vector<String> v = new Vector<String>();
+        for(String com : s.split(KEY_DELIM))
+        {
+            if(com == null || com.isEmpty())
+            {
+                throw new KeyParseException(s);
+            }
+            v.add(com.trim());
+        }
+        if(v.size() == 0)
+        {
+            throw new KeyParseException(s);
+        }
+        return v;
     }
 }

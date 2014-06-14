@@ -28,12 +28,9 @@ public abstract class AbstractCacheMap<C, K extends AbstractKey<C>, V>
     public Map<K, V> query(KeyQueryInterface<C, K> queryInterface)
     {
         HashMap<K, V> ret = new HashMap<K, V>();
-        for(K k : map.keySet())
+        for(K k : queryInterface.match(map.keySet()))
         {
-            if(queryInterface.match(k))
-            {
-                ret.put(k, map.get(k));
-            }
+            ret.put(k, map.get(k));
         }
         return ret;
     }

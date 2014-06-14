@@ -1,13 +1,18 @@
 package org.ruyunli.components.filter.keys;
 
 import org.ruyunli.components.filter.exceptions.KeyParseException;
+import org.ruyunli.components.filter.util.DefaultWildCardComparator;
+import org.ruyunli.components.filter.util.KeyParserInterface;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 /**
  * Created by Roy on 2014/6/11.
  */
-public class FilterKey extends AbstractKey<String>
+public class FilterKey extends AbstractKey<String> implements KeyQueryInterface<String, FilterKey>
 {
     private static final String KEY_DELIM = ".";
     private static final String INVALID_REG = "[\\*\\.\\?;:]";
@@ -22,21 +27,52 @@ public class FilterKey extends AbstractKey<String>
         return new FilterKey((Vector<String>)(getComponents().clone()));
     }
 
-    public static FilterKey parseFromStringToKey(String s) throws KeyParseException
+    public static FilterKey parseFromStringToKey(String s)
+            throws KeyParseException
     {
-        Vector<String> v = new Vector<String>();
-        for(String com : s.split(KEY_DELIM))
+        return parseFromStringToKey(s, null);
+    }
+
+
+    public static FilterKey parseFromStringToKey(String s,
+                                                 KeyParserInterface<String, String> p)
+            throws KeyParseException
+    {
+        if(p == null)
         {
-            if(com == null || com.trim().isEmpty() || com.matches(INVALID_REG))
+           p = new DefaultWildCardComparator();
+        }
+        return new FilterKey(p.parseKeyComponents(s));
+    }
+
+    @Override
+    public boolean match(FilterKey key)
+    {
+        return equals(key);
+    }
+
+    @Override
+    public List<FilterKey> match(Set<FilterKey> keys)
+    {
+        ArrayList<FilterKey> ret = new ArrayList<FilterKey>();
+        if(keys.contains(this))
+        {
+            ret.add(this);
+        }
+        return ret;
+    }
+
+    @Override
+    public List<FilterKey> match(List<FilterKey> keys)
+    {
+        ArrayList<FilterKey> ret = new ArrayList<FilterKey>();
+        for(FilterKey key : keys)
+        {
+            if(key.equals(this))
             {
-                throw new KeyParseException(s);
+                ret.add(key);
             }
-            v.add(com);
         }
-        if(v.size() == 0)
-        {
-            throw new KeyParseException(s);
-        }
-        return new FilterKey(v);
+        return ret;
     }
 }

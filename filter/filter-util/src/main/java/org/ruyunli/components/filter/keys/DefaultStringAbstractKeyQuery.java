@@ -1,10 +1,11 @@
 package org.ruyunli.components.filter.keys;
 
 import org.ruyunli.components.filter.exceptions.KeyParseException;
+import org.ruyunli.components.filter.util.DefaultWildCardComparator;
+import org.ruyunli.components.filter.util.KeyParserInterface;
 import org.ruyunli.components.filter.util.MatcherInterface;
-import org.ruyunli.components.filter.util.WildCardComparator;
 
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Created by Roy on 2014/6/11.
@@ -12,8 +13,6 @@ import java.util.Vector;
 public class DefaultStringAbstractKeyQuery<K extends AbstractKey<String>>
         implements KeyQueryInterface<String,K>
 {
-    private static final String KEY_DILIM=".";
-    private static final String INVALID_REG = "\\.;:";
     private Vector<String> components;
     private MatcherInterface<String> matcher;
 
@@ -24,7 +23,7 @@ public class DefaultStringAbstractKeyQuery<K extends AbstractKey<String>>
         matcher = s;
         if(matcher == null)
         {
-            matcher = new WildCardComparator();
+            matcher = new DefaultWildCardComparator();
         }
     }
     @Override
@@ -52,43 +51,47 @@ public class DefaultStringAbstractKeyQuery<K extends AbstractKey<String>>
         return true;
     }
 
-    @Override
-    public MatcherInterface<String> getMatcher()
+    private List<K> iterateMatch(Iterator<K> it)
     {
-        return matcher;
+        ArrayList<K> ret = new ArrayList<K>();
+        while(it.hasNext())
+        {
+            K k = it.next();
+            if(match(k))
+            {
+                ret.add(k);
+            }
+        }
+        return ret;
     }
 
     @Override
-    public void setMatcher(MatcherInterface<String> s)
+    public List<K> match(Set<K> keys)
     {
-        if(s != null)
-        {
-            matcher = s;
-        }
+        return iterateMatch(keys.iterator());
+    }
+
+    @Override
+    public List<K> match(List<K> keys)
+    {
+        return iterateMatch(keys.iterator());
     }
 
     public static DefaultStringAbstractKeyQuery parseFromString(String s)
             throws KeyParseException
     {
-        return parseFromString(s, null);
+        return parseFromString(s, null, null);
     }
 
     public static DefaultStringAbstractKeyQuery parseFromString(String s,
-                                                        MatcherInterface<String> e) throws KeyParseException
+                                                        MatcherInterface<String> e,
+                                                        KeyParserInterface<String, String> p)
+            throws KeyParseException
     {
-        Vector<String> v = new Vector<String>();
-        for(String com : s.split(KEY_DILIM))
+        if(p == null)
         {
-            if(com == null || com.isEmpty() || com.matches(INVALID_REG))
-            {
-                throw new KeyParseException(s);
-            }
-            v.add(com.trim());
+            p = new DefaultWildCardComparator();
         }
-        if(v.size() == 0)
-        {
-            throw new KeyParseException(s);
-        }
-        return new DefaultStringAbstractKeyQuery(v, e);
+        return new DefaultStringAbstractKeyQuery(p.parseQueryComponents(s), e);
     }
 }
