@@ -61,18 +61,4 @@ public class FilterKey extends AbstractKey<String> implements KeyQueryInterface<
         }
         return ret;
     }
-
-    @Override
-    public List<FilterKey> match(List<FilterKey> keys)
-    {
-        ArrayList<FilterKey> ret = new ArrayList<FilterKey>();
-        for(FilterKey key : keys)
-        {
-            if(key.equals(this))
-            {
-                ret.add(key);
-            }
-        }
-        return ret;
-    }
 }

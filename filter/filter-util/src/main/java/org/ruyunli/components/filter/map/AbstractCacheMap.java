@@ -1,4 +1,4 @@
-package org.ruyunli.components.filter.cache;
+package org.ruyunli.components.filter.map;
 
 import org.ruyunli.components.filter.keys.AbstractKey;
 import org.ruyunli.components.filter.keys.KeyQueryInterface;
@@ -30,7 +30,11 @@ public abstract class AbstractCacheMap<C, K extends AbstractKey<C>, V>
         HashMap<K, V> ret = new HashMap<K, V>();
         for(K k : queryInterface.match(map.keySet()))
         {
-            ret.put(k, map.get(k));
+            V v = map.get(k);
+            if(v != null)
+            {
+                ret.put(k, map.get(k));
+            }
         }
         return ret;
     }

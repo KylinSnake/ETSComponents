@@ -14,5 +14,4 @@ public interface KeyQueryInterface<C, K extends AbstractKey<C>>
     Vector<C> getComponents();
     boolean match(K key);
     List<K> match(Set<K> keys);
-    List<K> match(List<K> keys);
 }

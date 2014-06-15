@@ -10,5 +10,4 @@ public interface MatcherInterface<C>
 {
     boolean match(C value, C pattern);
     List<C> match(Set<C> values, C pattern);
-    List<C> match(List<C> values, C pattern);
 }

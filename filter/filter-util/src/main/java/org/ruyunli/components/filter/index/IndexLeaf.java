@@ -4,48 +4,67 @@ import org.ruyunli.components.filter.util.MatcherInterface;
 
 import java.util.List;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Created by Roy on 2014/6/12.
+ * Created by Roy on 2014/6/15.
  */
-public class IndexLeaf<C,K> implements IndexNodeInterface<C,K>
+public class IndexLeaf<C, K> implements IndexNodeInterface<C,K>
 {
-    private ConcurrentHashMap<C, IndexNodeInterface<C, K>> map =
-            new ConcurrentHashMap<C, IndexNodeInterface<C, K>>();
+    private K value;
+
+    private AtomicLong referenceNumber;
+
+    public IndexLeaf()
+    {
+        value = null;
+        referenceNumber = new AtomicLong(0);
+    }
     @Override
     public void getAllMatchedKeys(Vector<C> components, int currentLayer, MatcherInterface<C> matcher, List<K> ret)
     {
-        assert(components.size() > currentLayer);
-        for(C c : matcher.match(map.keySet(),components.get(currentLayer)))
-        {
-            IndexNodeInterface<C, K> value = map.get(c);
-            if(value != null)
-            {
-                value.getAllMatchedKeys(components, currentLayer+1, matcher, ret);
-            }
-        }
+        assert(components.size() == currentLayer);
+        ret.add(value);
+
     }
 
     @Override
     public void insertKey(Vector<C> components, int currentLayer, K key)
     {
-        assert(components.size() > currentLayer);
-        C component = components.get(currentLayer);
-
-        IndexNodeInterface<C, K> value = map.get(currentLayer);
-
+        assert(components.size() == currentLayer);
+        value = key;
     }
 
     @Override
     public K removeKey(Vector<C> components, int currentLayer)
     {
-        return null;
+        assert(components.size() == currentLayer);
+        K ret = value;
+        value = null;
+        return ret;
     }
 
     @Override
     public void clear()
     {
+        value = null;
+    }
 
+    @Override
+    public void addRef()
+    {
+        referenceNumber.incrementAndGet();
+    }
+
+    @Override
+    public void releaseRef()
+    {
+        referenceNumber.decrementAndGet();
+    }
+
+    @Override
+    public boolean canBeRemoved()
+    {
+        return referenceNumber.get() == 0 && value == null;
     }
 }

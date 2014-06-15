@@ -256,12 +256,6 @@ public class DefaultWildCardComparator
     }
 
     @Override
-    public List<String> match(List<String> values, String pattern)
-    {
-        return matchIterator(values.iterator(), pattern);
-    }
-
-    @Override
     public Vector<String> parseKeyComponents(String s) throws KeyParseException
     {
         if(s.contains(INVALID_REG) ||

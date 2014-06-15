@@ -1,6 +1,5 @@
 package org.ruyunli.components.filter.index;
 
-import org.ruyunli.components.filter.cache.CacheMapInterface;
 import org.ruyunli.components.filter.util.MatcherInterface;
 
 import java.util.List;
@@ -15,4 +14,7 @@ public interface IndexNodeInterface<C, K>
     public void insertKey(Vector<C> components, int currentLayer, K key);
     public K removeKey(Vector<C> components, int currentLayer);
     public void clear();
+    public void addRef();
+    public void releaseRef();
+    public boolean canBeRemoved();
 }

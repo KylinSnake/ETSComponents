@@ -57,7 +57,7 @@ public class DefaultStringAbstractKeyQuery<K extends AbstractKey<String>>
         while(it.hasNext())
         {
             K k = it.next();
-            if(match(k))
+            if(k != null && match(k))
             {
                 ret.add(k);
             }
@@ -71,11 +71,6 @@ public class DefaultStringAbstractKeyQuery<K extends AbstractKey<String>>
         return iterateMatch(keys.iterator());
     }
 
-    @Override
-    public List<K> match(List<K> keys)
-    {
-        return iterateMatch(keys.iterator());
-    }
 
     public static DefaultStringAbstractKeyQuery parseFromString(String s)
             throws KeyParseException
