@@ -12,8 +12,8 @@ public class DefaultWildCardComparator
 {
     private static final char ALL_WILD = '*';
     private static final char SINGLE_WILD = '?';
-    private static final String KEY_DELIM = ".";
-    private static final String INVALID_REG = "\\.;:";
+    private static final String KEY_DELIM = "\\.";
+    private static final String INVALID_REG = ";";
 
     private static void MatchWithAllWildcardWithOverlay(
             char[] s, char[] pattern, int[] overlay_value, int sBegin, int pBegin,

@@ -10,13 +10,13 @@ import java.util.*;
 /**
  * Created by Roy on 2014/6/11.
  */
-public class DefaultStringAbstractKeyQuery<K extends AbstractKey<String>>
+public class DefaultStringKeyQuery<K extends AbstractKey<String>>
         implements KeyQueryInterface<String,K>
 {
     private Vector<String> components;
     private MatcherInterface<String> matcher;
 
-    protected DefaultStringAbstractKeyQuery(Vector<String> e,
+    protected DefaultStringKeyQuery(Vector<String> e,
                                     MatcherInterface<String> s)
     {
         components = e;
@@ -72,13 +72,13 @@ public class DefaultStringAbstractKeyQuery<K extends AbstractKey<String>>
     }
 
 
-    public static DefaultStringAbstractKeyQuery parseFromString(String s)
+    public static DefaultStringKeyQuery parseFromString(String s)
             throws KeyParseException
     {
         return parseFromString(s, null, null);
     }
 
-    public static DefaultStringAbstractKeyQuery parseFromString(String s,
+    public static DefaultStringKeyQuery parseFromString(String s,
                                                         MatcherInterface<String> e,
                                                         KeyParserInterface<String, String> p)
             throws KeyParseException
@@ -87,6 +87,6 @@ public class DefaultStringAbstractKeyQuery<K extends AbstractKey<String>>
         {
             p = new DefaultWildCardComparator();
         }
-        return new DefaultStringAbstractKeyQuery(p.parseQueryComponents(s), e);
+        return new DefaultStringKeyQuery(p.parseQueryComponents(s), e);
     }
 }

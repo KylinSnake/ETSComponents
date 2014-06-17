@@ -69,6 +69,16 @@ public class FilterValue
         return ret;
     }
 
+    public int count()
+    {
+        return map.size();
+    }
+
+    public void clear()
+    {
+         map.clear();
+    }
+
     public String remove(String key)
     {
         return map.remove(key);
@@ -96,15 +106,22 @@ public class FilterValue
                 throw new ValueParseException("Invalid Attribute String, contains invalid characters");
             }
             String[] pair = s.split("=");
-            if (pair.length != 2 || pair[0] == null || pair[0].trim().isEmpty())
+            if (pair.length ==0 || pair.length > 2 || pair[0] == null || pair[0].trim().isEmpty())
             {
                 throw new ValueParseException("Invalid Attribute String, No attribute key define");
             }
-            if (pair[1] == null)
+            if(pair.length == 2)
             {
-                pair[1] = "";
+                if (pair[1] == null)
+                {
+                    pair[1] = "";
+                }
+                m.put(pair[0].trim(), pair[1].trim());
             }
-            m.put(pair[0].trim(), pair[1].trim());
+            else
+            {
+                m.put(pair[0].trim(), "");
+            }
         }
         if (m.size() == 0)
         {

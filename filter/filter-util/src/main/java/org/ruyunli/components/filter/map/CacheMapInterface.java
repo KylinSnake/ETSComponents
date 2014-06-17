@@ -21,4 +21,5 @@ public  interface CacheMapInterface<C, K extends AbstractKey<C>, V>
     boolean contains(K k);
     void clear();
     K generateKeyFromString(String s) throws KeyParseException;
+    KeyQueryInterface<C, K> generateQueryFromString(String s) throws KeyParseException;
 }

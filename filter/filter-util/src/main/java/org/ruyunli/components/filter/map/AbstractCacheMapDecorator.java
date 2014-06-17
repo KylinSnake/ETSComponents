@@ -79,4 +79,10 @@ public abstract class AbstractCacheMapDecorator<C, K extends AbstractKey<C>, V>
     {
         return impl.generateKeyFromString(s);
     }
+
+    @Override
+    public KeyQueryInterface<C, K> generateQueryFromString(String s) throws KeyParseException
+    {
+        return impl.generateQueryFromString(s);
+    }
 }
