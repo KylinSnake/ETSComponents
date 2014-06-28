@@ -72,8 +72,9 @@ public class IndexNode<C,K> implements IndexNodeInterface<C,K>
         if(node != null)
         {
             K ret = node.removeKey(components, currentLayer + 1);
-            synchronized (node)
+            synchronized (map.get(component))
             {
+                node = map.get(component);
                 if(node.canBeRemoved())
                 {
                     map.remove(component);
