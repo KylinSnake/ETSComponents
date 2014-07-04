@@ -52,6 +52,8 @@ public class DefaultConnectorImpl implements ConnectorImplInterface
         {
 
         }
+
+        return false;
     }
 
     @Override

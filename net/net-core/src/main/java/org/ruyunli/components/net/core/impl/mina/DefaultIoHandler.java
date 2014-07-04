@@ -1,6 +1,7 @@
 package org.ruyunli.components.net.core.impl.mina;
 
 import org.apache.mina.core.service.IoHandler;
+import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.ruyunli.components.net.core.exception.NetServiceException;
 import org.ruyunli.components.net.core.impl.ServiceImplInterface;
@@ -47,9 +48,8 @@ class DefaultIoHandler implements IoHandler
         session.setAttribute(NAME_ATTR,sessionName);
         SessionImplInterface sessionImpl = outer.createDecoratedSessionImpl(new DefaultSessionImpl(sessionName, session));
 
-        /*TODO: Register the session to SessionMgr. If the sessionImpl is not there, we use the new one
-        * Otherwise, we set the IoSession to to the sessionimpl. Of course, the setIoSession is the method in defaultSessionImpl
-        * /
+        //TODO: Register the session to SessionMgr. If the sessionImpl is not there, we use the new one
+        // Otherwise, we set the IoSession to to the sessionimpl. Of course, the setIoSession is the method in defaultSessionImpl
         outer.getHandler().onCreated(sessionImpl);
     }
 
