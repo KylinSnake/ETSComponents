@@ -10,6 +10,7 @@ import org.ruyunli.components.net.core.future.WriteFutureInterface;
  */
 public interface SessionImplInterface
 {
+    public static final String NAME_ATTR = "sessionName";
     public String getSessionName();
     public CloseFutureInterface close(boolean immediate);
     public void write(String message, int timeout) throws SessionException;

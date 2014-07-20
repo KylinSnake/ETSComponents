@@ -1,6 +1,8 @@
 package org.ruyunli.components.net.core.session;
 
 
+import org.ruyunli.components.net.core.impl.SessionImplInterface;
+
 import java.util.*;
 
 /**
@@ -10,6 +12,7 @@ public class AbstractSession
 {
     private String name;
     private Set<SessionAsyncEventHandlerInterface> handlers;
+    private SessionImplInterface impl;
 
     public AbstractSession(String name)
     {

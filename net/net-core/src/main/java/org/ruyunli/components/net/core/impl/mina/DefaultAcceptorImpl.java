@@ -1,11 +1,12 @@
 package org.ruyunli.components.net.core.impl.mina;
 
 import org.apache.mina.core.service.IoAcceptor;
-import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
+import org.apache.mina.core.service.IoHandler;
+import org.apache.mina.core.session.IdleStatus;
+import org.apache.mina.core.session.IoSession;
 import org.ruyunli.components.net.core.impl.AcceptorImplInterface;
-import org.ruyunli.components.net.core.impl.SessionImplHandlerAdapter;
-import org.ruyunli.components.net.core.impl.SessionImplHandlerInterface;
 import org.ruyunli.components.net.core.impl.SessionImplInterface;
+import org.ruyunli.components.net.core.service.AcceptorInterface;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -14,63 +15,23 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by Roy on 2014/7/1.
  */
-public class DefaultAcceptorImpl implements AcceptorImplInterface
+public class DefaultAcceptorImpl extends DefaultAbstractServiceImpl
+        implements AcceptorImplInterface, IoHandler
 {
     private int port;
-    private int timeout;
-    private String name;
-    private SessionImplHandlerInterface handler;
     private IoAcceptor acceptor;
     private AtomicBoolean isStarted = new AtomicBoolean(false);
 
-    DefaultAcceptorImpl(String name, int port, int timeout, IoAcceptor acceptor, SessionImplHandlerInterface handler)
+    DefaultAcceptorImpl(String name, int port, int timeout, IoAcceptor acceptor, AcceptorInterface server)
     {
-        this.name = name;
+        super(name,timeout,server);
         this.port = port;
-        this.timeout = timeout;
-        this.handler = handler == null ? new SessionImplHandlerAdapter(): handler;
-
         // TODO: Here acceptor may need inject from factory, as we want to share with the same thread pool
         this.acceptor = acceptor;
     }
     @Override
     public int getPort() {
         return port;
-    }
-
-    @Override
-    public int getTimeout() {
-        return timeout;
-    }
-
-    @Override
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
-    }
-
-    @Override
-    public void setHandler(SessionImplHandlerInterface handler)
-    {
-        assert(handler != null);
-        this.handler = handler;
-    }
-
-    @Override
-    public SessionImplHandlerInterface getHandler() {
-        return handler;
-    }
-
-
-    // TODO: for now, we only return session without any decoration
-    // in future, we will add the decoration creation for PTCP session, MessageQueue sesson and so on
-    @Override
-    public SessionImplInterface createDecoratedSessionImpl(SessionImplInterface session) {
-        return session;
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -98,6 +59,21 @@ public class DefaultAcceptorImpl implements AcceptorImplInterface
         {
                 acceptor.unbind();
         }
+    }
+
+    @Override
+    protected String getSessionName(IoSession session)
+    {
+        assert(session != null);
+        String name = (String)session.getAttribute(SessionImplInterface.NAME_ATTR);
+        if(name == null)
+        {
+            InetSocketAddress address = (InetSocketAddress)session.getRemoteAddress();
+            assert(address != null);
+            name = getName() + "-" + address.getHostString() + ":" + address.getPort();
+            session.setAttribute(SessionImplInterface.NAME_ATTR, name);
+        }
+        return name;
     }
 }
 
