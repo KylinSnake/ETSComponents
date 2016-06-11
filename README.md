@@ -1,4 +1,0 @@
-ETSComponents
-=============
-
-My ETS Components
