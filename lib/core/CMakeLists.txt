@@ -1,0 +1,12 @@
+file(GLOB core_cpp *.cpp)
+file(GLOB core_h *.h)
+
+add_library(core_static STATIC ${core_cpp})
+add_library(core_shared SHARED ${core_cpp})
+target_link_libraries(core_static pthread)
+target_link_libraries(core_shared pthread)
+set_target_properties(core_static core_shared PROPERTIES OUTPUT_NAME core)
+
+install(TARGETS core_static DESTINATION lib)
+install(TARGETS core_shared DESTINATION lib)
+install(FILES ${core_h} DESTINATION include/core)
