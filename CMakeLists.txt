@@ -40,7 +40,7 @@ set(BOOST_LIB "$ENV{BOOST_LIBS}")
 set(PROJ_BUILD_DIR "$ENV{PROJECT_BUILD}")
 
 if(BOOST_INC AND BOOST_LIB)
-  message(STATUS "found boost libs in TP")
+  message(STATUS "found boost libs in TP, INC=${BOOST_INC} LIB=${BOOST_LIB}")
 else()
   message(FATAL_ERROR "Cannot find boost libs, exit")
 endif()
@@ -53,7 +53,7 @@ else()
   set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif()
 
-include_directories($BOOST_INC)
+include_directories(${BOOST_INC})
 include_directories(${PROJECT_SOURCE_DIR})
 
 link_directories($ENV{LD_LIBRARY_PATH})
