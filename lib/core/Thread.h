@@ -38,4 +38,13 @@ namespace snake
   }
 }
 
+namespace global
+{
+  pid_t current_thread_id();
+  const char* current_thread_id_str();
+  const char* current_thread_name();
+  bool is_main_thread();
+  void sleep_usec(long usec);
+}
+
 #endif
