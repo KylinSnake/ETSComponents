@@ -110,6 +110,13 @@ namespace snake
       }
       return NULL;
     }
+
+    int Thread::join()
+    {
+      assert(is_started);
+      assert(!is_joined);
+      return pthread_join(pthread_id_, NULL);
+    }
   }
 }
 
