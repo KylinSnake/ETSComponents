@@ -49,9 +49,8 @@
     <NMakePreprocessorDefinitions>__VisualGDB_CFG_Debug;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <NMakeIncludeSearchPath>$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0001\4.8.5;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0001\4.8.5\x86_64-redhat-linux;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0001\4.8.5\backward;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0002\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0003\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0000\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <NMakeIncludeSearchPath>$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0001\4.8.5;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0001\4.8.5\x86_64-redhat-linux;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0001\4.8.5\backward;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0002\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0003\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0000\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0001\4.8.5;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0001\4.8.5\x86_64-redhat-linux;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0001\4.8.5\backward;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0002\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0003\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\main\0000\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
     <NMakeForcedIncludes>$(ProjectDir)\gcc_Release.h;$(VISUALGDB_DIR)\gcc_compat.h;$(NMakeForcedIncludes)</NMakeForcedIncludes>
-    <NMakePreprocessorDefinitions>__VisualGDB_CFG_Release;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /build "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /clean "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>"$(VISUALGDB_DIR)\VisualGDB.exe" /rebuild "$(ProjectPath)" "/solution:$(SolutionPath)" "/config:$(Configuration)" "/platform:$(Platform)"</NMakeReBuildCommandLine>
@@ -59,6 +58,7 @@
     <IncludePath />
     <ReferencePath />
     <LibraryPath />
+    <NMakePreprocessorDefinitions>__VisualGDB_CFG_Release;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
   </PropertyGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
@@ -71,9 +71,6 @@
   <ItemGroup>
     <Text Include="..\..\CMakeLists.txt" />
     <Text Include="..\..\lib\core\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\build.sh" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

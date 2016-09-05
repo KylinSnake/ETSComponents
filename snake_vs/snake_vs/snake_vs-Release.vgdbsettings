@@ -35,6 +35,7 @@
       </FileMasks>
       <TransferNewFilesOnly>true</TransferNewFilesOnly>
       <IncludeSubdirectories>true</IncludeSubdirectories>
+      <SelectedDirectories />
     </MainSourceTransferCommand>
     <AllowChangingHostForMainCommands>false</AllowChangingHostForMainCommands>
     <SkipBuildIfNoSourceFilesChanged>false</SkipBuildIfNoSourceFilesChanged>
@@ -45,8 +46,8 @@
   </Project>
   <Build xsi:type="com.visualgdb.build.cmake">
     <RelativeSourceDirectory />
-    <ConfigurationType>RELWITHDEBINFO</ConfigurationType>
-    <BinaryDirectory>Release</BinaryDirectory>
+    <ConfigurationType>RELEASE</ConfigurationType>
+    <BinaryDirectory>build/Release</BinaryDirectory>
     <Toolchain>
       <Name>Default GCC toolchain on main</Name>
       <UniqueID>com.sysprogs.toolchain.default-gcc</UniqueID>
@@ -80,6 +81,11 @@
     </Toolchain>
     <MakeCommandTemplate>
       <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
+      <RemoteHost>
+        <HostName>main</HostName>
+        <Transport>SSH</Transport>
+        <UserName>msdev</UserName>
+      </RemoteHost>
       <Command>make</Command>
       <WorkingDirectory>$(BuildDir)</WorkingDirectory>
       <Environment>
@@ -93,6 +99,11 @@
     </MakeCommandTemplate>
     <CMakeCommand>
       <SkipWhenRunningCommandList>false</SkipWhenRunningCommandList>
+      <RemoteHost>
+        <HostName>main</HostName>
+        <Transport>SSH</Transport>
+        <UserName>msdev</UserName>
+      </RemoteHost>
       <Command>cmake</Command>
       <Environment>
         <Records>
@@ -177,6 +188,7 @@
     <ShowMessageAfterExecuting>true</ShowMessageAfterExecuting>
   </CustomShortcuts>
   <UserDefinedVariables />
+  <ImportedPropertySheets />
   <CodeSense>
     <Enabled>Unknown</Enabled>
     <ExtraSettings>
