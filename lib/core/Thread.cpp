@@ -113,8 +113,8 @@ namespace snake
 
     int Thread::join()
     {
-      assert(is_started);
-      assert(!is_joined);
+      assert(is_started_);
+      assert(!is_joined_);
       return pthread_join(pthread_id_, NULL);
     }
   }
