@@ -8,6 +8,17 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release")
 endif()
 
+if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+  MESSAGE( "64 bits compiler detected" )
+  SET( EX_PLATFORM 64 )
+  SET( EX_PLATFORM_NAME "x64" )
+else( CMAKE_SIZEOF_VOID_P EQUAL 8 ) 
+  MESSAGE( "32 bits compiler detected" )
+  SET( EX_PLATFORM 32 )
+  SET( EX_PLATFORM_NAME "x86" )
+endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+
+
 set(CXX_FLAGS
  -g
  -DCHECK_PTHREAD_RETURN_VALUE
@@ -23,7 +34,7 @@ set(CXX_FLAGS
  -rdynamic
  )
 
-if(CMAKE_BUILD_BITS EQUAL 32)
+if(EX_PLATFORM EQUAL 32)
   list(APPEND CXX_FLAGS "-m32")
 endif()
 
@@ -43,12 +54,13 @@ else()
 	message(FATAL_ERROR "Cannot find boost libs, exit")
 endif()
 
+set(INSTALL_DIR "install/${CMAKE_BUILD_TYPE}${EX_PLATFORM}")
 if(PROJ_BUILD_DIR)
-  message(STATUS "Install folder is ${PROJ_BUILD_DIR}/${PROJECT_NAME}")
-  set(CMAKE_INSTALL_PREFIX "${PROJ_BUILD_DIR}/${PROJECT_NAME}")
+  message(STATUS "Install folder is ${PROJ_BUILD_DIR}/${INSTALL_DIR}")
+  set(CMAKE_INSTALL_PREFIX "${PROJ_BUILD_DIR}/${INSTALL_DIR}")
 else()
-  message(WARNING "Cannot find install dir, use ./install")
-  set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/install")
+  message(WARNING "Cannot find install dir, use ./${INSTALL_DIR}")
+  set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}/${INSTALL_DIR}")
 endif()
 
 include_directories(${BOOST_INC})
