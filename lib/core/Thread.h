@@ -1,50 +1,42 @@
 #ifndef SNAKE_CORE_THREAD_H
 #define SNAKE_CORE_THREAD_H
 
-#include <pthread.h>
-#include <string>
-#include <boost/function.hpp>
-#include <boost/noncopyable.hpp>
-
-using namespace std;
+#include <thread>
 
 namespace snake
 {
-  namespace core
-  {
-    class Thread: boost::noncopyable
-    {
-      public:
-        typedef boost::function<void ()> ThreadFunc;
-        Thread(const ThreadFunc& f, const string& name=string());
-        ~Thread();
-
-        void start();
-        int join();
-
-        bool started() const { return is_started_;}
-        const string& name() const { return name_;}
-
-        pid_t tid() const {return tid_;}
-      private:
-        static void* run(void* t);
-        pid_t tid_;
-        string name_;
-        bool is_started_;
-        bool is_joined_;
-        ThreadFunc func_;
-        pthread_t pthread_id_;
-    };
-  }
+	namespace core
+	{
+		using thread = std::thread;
+	}
 }
 
 namespace global
 {
-  pid_t current_thread_id();
-  const char* current_thread_id_str();
-  const char* current_thread_name();
-  bool is_main_thread();
-  void sleep_usec(long usec);
+	namespace current_thread
+	{
+		inline snake::core::thread::id get_id() noexcept
+		{
+			return std::this_thread::get_id();
+		}
+		
+		inline void yield() noexcept
+		{
+			return std::this_thread::yield();
+		}
+		
+		template<typename R, typename P>
+			inline void sleep_for( const std::chrono::duration<R, P>& rtime )
+			{
+				return std::this_thread::sleep_for( rtime );
+			}
+		
+		template<typename C, typename P>
+			inline void sleep_until( const std::chrono::time_point<C, P>& atime )
+			{
+				return std::this_thread::sleep_until( atime );
+			}
+	}
 }
 
 #endif
