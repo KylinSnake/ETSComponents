@@ -21,6 +21,18 @@
     <ClInclude Include="..\..\lib\core\Thread.h">
       <Filter>lib\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\lib\core\Mutex.h">
+      <Filter>lib\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\core\ConditionVariable.h">
+      <Filter>lib\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\core\Future.h">
+      <Filter>lib\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\core\Atomic.h">
+      <Filter>lib\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\build.sh" />

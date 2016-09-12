@@ -92,6 +92,10 @@
     <ClCompile Include="..\..\lib\core\test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\lib\core\Atomic.h" />
+    <ClInclude Include="..\..\lib\core\ConditionVariable.h" />
+    <ClInclude Include="..\..\lib\core\Future.h" />
+    <ClInclude Include="..\..\lib\core\Mutex.h" />
     <ClInclude Include="..\..\lib\core\Thread.h" />
   </ItemGroup>
   <ItemGroup>
@@ -99,7 +103,11 @@
       <FileType>Script</FileType>
     </None>
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <RemotePostBuildEvent>
+      <Command>(chmod a+x $(RemoteRootDir)/build.sh  &amp;&amp; $(RemoteRootDir)/build.sh install)</Command>
+    </RemotePostBuildEvent>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>
