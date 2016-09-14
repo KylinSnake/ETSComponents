@@ -4,10 +4,26 @@
 #include "ConditionVariable.h"
 #include "Future.h"
 #include "Atomic.h"
+#include "ThreadGroup.h"
+#include "ThreadQueueGroup.h"
+#include "ThreadDispatch.h"
+#include "ThreadQueue.h"
 #include <iostream>
+#include <vector>
 
-void test()
+template<class T>
+using LockQueueT = snake::core::QueueT<T, snake::core::mutex>;
+
+template<class T>
+using ThreadGroupT = snake::core::ThreadGroupT<T
+	, snake::core::DedicatedQueueGroupT
+	, std::tuple<T,snake::core::thread::id>
+	, snake::core::RoundRobinDispatchT
+	, LockQueueT>;
+
+	void test()
 {
+
 	snake::core::thread t;
 	global::current_thread::get_id();
 	snake::core::mutex m1;
@@ -28,7 +44,23 @@ void test()
 int main()
 {
 	std::cout << global::current_thread::get_id() << std::endl;
-	snake::core::thread::id j = global::current_thread::get_id();
-	std::cout << j << std::endl;
+
+	ThreadGroupT<int> group( [] ( int i )
+	{
+		return std::make_tuple(i, global::current_thread::get_id());
+	}, 4 );
+	group.start();
+	std::vector<snake::core::future<std::tuple<int, snake::core::thread::id>>> vec;
+	for (int i = 0; i < 1000; ++i)
+	{
+		vec.push_back(group.push( std::move(i) ));
+	}
+
+	for (size_t i = 0; i < vec.size(); ++i)
+	{
+		auto result = vec[i].get();
+		std::cout << "int i = " << std::get<0>( result ) << ", thread Id = " << std::get<1>( result ) << std::endl;
+	}
+
 	return 0;
 }
