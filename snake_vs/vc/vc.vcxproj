@@ -96,11 +96,13 @@
     <ClInclude Include="..\..\lib\core\ConditionVariable.h" />
     <ClInclude Include="..\..\lib\core\Future.h" />
     <ClInclude Include="..\..\lib\core\Mutex.h" />
-    <ClInclude Include="..\..\lib\core\ThreadGroup.h" />
+    <ClInclude Include="..\..\lib\core\ThreadExitStrategyT.h" />
+    <ClInclude Include="..\..\lib\core\ThreadGroupT.h" />
     <ClInclude Include="..\..\lib\core\Thread.h" />
-    <ClInclude Include="..\..\lib\core\ThreadDispatch.h" />
-    <ClInclude Include="..\..\lib\core\ThreadQueue.h" />
-    <ClInclude Include="..\..\lib\core\ThreadQueueGroup.h" />
+    <ClInclude Include="..\..\lib\core\ThreadDispatchT.h" />
+    <ClInclude Include="..\..\lib\core\ThreadMessageContainerT.h" />
+    <ClInclude Include="..\..\lib\core\ThreadMessageQueueT.h" />
+    <ClInclude Include="..\..\lib\core\ThreadQueueGroupT.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\build.sh">

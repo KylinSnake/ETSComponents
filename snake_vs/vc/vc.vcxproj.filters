@@ -33,16 +33,22 @@
     <ClInclude Include="..\..\lib\core\Atomic.h">
       <Filter>lib\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\core\ThreadQueue.h">
+    <ClInclude Include="..\..\lib\core\ThreadMessageQueueT.h">
       <Filter>lib\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\core\ThreadQueueGroup.h">
+    <ClInclude Include="..\..\lib\core\ThreadQueueGroupT.h">
       <Filter>lib\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\core\ThreadDispatch.h">
+    <ClInclude Include="..\..\lib\core\ThreadGroupT.h">
       <Filter>lib\core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\core\ThreadGroup.h">
+    <ClInclude Include="..\..\lib\core\ThreadDispatchT.h">
+      <Filter>lib\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\core\ThreadMessageContainerT.h">
+      <Filter>lib\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\core\ThreadExitStrategyT.h">
       <Filter>lib\core</Filter>
     </ClInclude>
   </ItemGroup>

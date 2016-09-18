@@ -1,5 +1,5 @@
-#ifndef SNAKE_CORE_THREAD_GROUP_H
-#define SNAKE_CORE_THREAD_GROUP_H
+#ifndef SNAKE_CORE_THREAD_GROUP_T_H
+#define SNAKE_CORE_THREAD_GROUP_T_H
 
 #include <cassert>
 #include <memory>
@@ -16,8 +16,8 @@ namespace snake
 	namespace core
 	{
 		template<class T
-			, template<class T, template<class T> class QueueT> class QueueGroupT
 			, class R
+			, template<class T, template<class T> class QueueT> class QueueGroupT
 			, template<class T> class DispatchT
 			, template<class T> class QueueT
 		>
@@ -42,12 +42,15 @@ namespace snake
 			ThreadGroupT( const ThreadGroupT & ) = delete;
 			ThreadGroupT& operator=( const ThreadGroupT& ) = delete;
 
-			future<R> push( T&& t )
+			future<R> push( T&& t)
 			{
 				promise<R> p;
 				future<R> f = p.get_future();
-				queue_group_.get_queue( dispatcher_.next(t) ).push( std::make_tuple(std::move( t ), std::move(p)) );
-				return f;
+				if (queue_group_.get_queue( dispatcher_.next( t ) ).push( std::make_tuple( std::move( t ), std::move( p ) ) ))
+				{
+					return f;
+				}
+				return future<R>();
 			}
 
 			void start()

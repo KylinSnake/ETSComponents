@@ -15,6 +15,7 @@ namespace snake
 		using promise = std::promise<T>;
 		template<class T>
 		using shared_future = std::shared_future<T>;
+		using future_status = std::future_status;
 	}
 }
 

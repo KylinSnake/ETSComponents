@@ -4,22 +4,23 @@
 #include "ConditionVariable.h"
 #include "Future.h"
 #include "Atomic.h"
-#include "ThreadGroup.h"
-#include "ThreadQueueGroup.h"
-#include "ThreadDispatch.h"
-#include "ThreadQueue.h"
+#include "ThreadGroupT.h"
+#include "ThreadQueueGroupT.h"
+#include "ThreadDispatchT.h"
+#include "ThreadMessageQueueT.h"
+#include "ThreadMessageContainerT.h"
 #include <iostream>
 #include <vector>
 
-template<class T>
-using LockQueueT = snake::core::QueueT<T, snake::core::mutex>;
+template<typename T>
+using LockableQueue = snake::core::ThreadMessageQueueT<T, snake::core::QueueT, snake::core::exit_after_handle_all>;//snake::core::exit_immediately>;
 
 template<class T>
 using ThreadGroupT = snake::core::ThreadGroupT<T
+	, std::tuple<T, snake::core::thread::id>
 	, snake::core::DedicatedQueueGroupT
-	, std::tuple<T,snake::core::thread::id>
 	, snake::core::RoundRobinDispatchT
-	, LockQueueT>;
+	, LockableQueue>;
 
 	void test()
 {
@@ -53,13 +54,35 @@ int main()
 	std::vector<snake::core::future<std::tuple<int, snake::core::thread::id>>> vec;
 	for (int i = 0; i < 1000; ++i)
 	{
-		vec.push_back(group.push( std::move(i) ));
+		auto f = group.push( std::move( i ) );
+		if (f.valid())
+		{
+			vec.push_back(std::move(f));
+		}
+		if (i == 800)
+		{
+			group.stop();
+		}
 	}
 
 	for (size_t i = 0; i < vec.size(); ++i)
 	{
-		auto result = vec[i].get();
-		std::cout << "int i = " << std::get<0>( result ) << ", thread Id = " << std::get<1>( result ) << std::endl;
+		try
+		{
+			if (vec[i].wait_for(std::chrono::seconds(1)) == snake::core::future_status::ready)
+			{
+				auto result = vec[i].get();
+				std::cout << "int i = " << std::get<0>( result ) << ", thread Id = " << std::get<1>( result ) << std::endl;
+			}
+			else
+			{
+				std::cout << "int i = " << i << " invalid" << std::endl;
+			}
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << "int i = " << i << " has Exception: " << e.what() << std::endl;
+		}
 	}
 
 	return 0;
