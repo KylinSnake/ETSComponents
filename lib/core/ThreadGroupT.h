@@ -76,6 +76,10 @@ namespace snake
 								catch (...){}
 							}
 						}
+						queue.clear( [] ( std::tuple<T, promise<R>>& t )
+						{
+							std::get<1>( t ).set_exception( std::make_exception_ptr( std::bad_exception() ) );
+						} );
 					}) );
 				}
 			}

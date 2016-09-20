@@ -17,6 +17,11 @@ namespace snake
 			QueueT& operator =( const QueueT& ) = delete;
 			using CollectionType = std::list<T>;
 
+			void swap( CollectionType& t )
+			{
+				list_.swap( t );
+			}
+
 			void push( T&& t )
 			{
 				list_.push_back( std::move( t ) );

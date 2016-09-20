@@ -69,6 +69,19 @@ namespace snake
 					cv_.notify_all();
 				}
 			}
+
+			void clear(std::function<void(T&)> clean_function)
+			{
+				typename ContainerT<T>::CollectionType col;
+				{
+					unique_lock<LockT> guard( lock_ );
+					list_.swap( col );
+				}
+				for (auto& t : col)
+				{
+					clean_function( t );
+				}
+			}
 		private:
 			ContainerT<T> list_;
 			LockT lock_;

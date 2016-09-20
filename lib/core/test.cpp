@@ -13,7 +13,7 @@
 #include <vector>
 
 template<typename T>
-using LockableQueue = snake::core::ThreadMessageQueueT<T, snake::core::QueueT, snake::core::exit_after_handle_all>;//snake::core::exit_immediately>;
+using LockableQueue = snake::core::ThreadMessageQueueT<T, snake::core::QueueT, snake::core::exit_immediately>;
 
 template<class T>
 using ThreadGroupT = snake::core::ThreadGroupT<T
@@ -51,14 +51,12 @@ int main()
 		return std::make_tuple(i, global::current_thread::get_id());
 	}, 4 );
 	group.start();
+	global::current_thread::sleep_for( std::chrono::seconds( 1 ) );
 	std::vector<snake::core::future<std::tuple<int, snake::core::thread::id>>> vec;
 	for (int i = 0; i < 1000; ++i)
 	{
 		auto f = group.push( std::move( i ) );
-		if (f.valid())
-		{
-			vec.push_back(std::move(f));
-		}
+		vec.push_back(std::move(f));
 		if (i == 800)
 		{
 			group.stop();
@@ -69,7 +67,7 @@ int main()
 	{
 		try
 		{
-			if (vec[i].wait_for(std::chrono::seconds(1)) == snake::core::future_status::ready)
+			if (vec[i].valid() && vec[i].wait_for( std::chrono::seconds( 1 ) ) == snake::core::future_status::ready)
 			{
 				auto result = vec[i].get();
 				std::cout << "int i = " << std::get<0>( result ) << ", thread Id = " << std::get<1>( result ) << std::endl;
