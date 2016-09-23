@@ -8,14 +8,14 @@ namespace snake
 	namespace core
 	{
 		template <class T>
-		using future = std::future<T>;
+		using Future = std::future<T>;
 		template <class T, class ...Arg>
-		using packaged_task = std::packaged_task<T(Arg...)>;
+		using PackagedTask = std::packaged_task<T(Arg...)>;
 		template <class T>
-		using promise = std::promise<T>;
+		using Promise = std::promise<T>;
 		template<class T>
-		using shared_future = std::shared_future<T>;
-		using future_status = std::future_status;
+		using SharedFuture = std::shared_future<T>;
+		using FutureStatus = std::future_status;
 	}
 }
 

@@ -8,20 +8,20 @@ namespace snake
 	namespace core
 	{
 		template<typename T>
-		using atomic = std::atomic<T>;
+		using Atomic = std::atomic<T>;
 
-		class atomic_flag
+		class AtomicFlag
 		{
 		public:
-			atomic_flag() noexcept
+			AtomicFlag() noexcept
 				:flag_( ATOMIC_FLAG_INIT )
 			{
 			}
-			~atomic_flag() noexcept
+			~AtomicFlag() noexcept
 			{
 			}
-			atomic_flag( const atomic_flag& ) = delete;
-			atomic_flag& operator=( const atomic_flag& ) = delete;
+			AtomicFlag( const AtomicFlag& ) = delete;
+			AtomicFlag& operator=( const AtomicFlag& ) = delete;
 			bool test_and_set() noexcept
 			{
 				return flag_.test_and_set();

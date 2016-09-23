@@ -7,7 +7,8 @@ namespace snake
 {
 	namespace core
 	{
-		using thread = std::thread;
+		using Thread = std::thread;
+		using ThreadId = std::thread::id;
 	}
 }
 
@@ -15,7 +16,7 @@ namespace global
 {
 	namespace current_thread
 	{
-		inline snake::core::thread::id get_id() noexcept
+		inline snake::core::ThreadId get_id() noexcept
 		{
 			return std::this_thread::get_id();
 		}

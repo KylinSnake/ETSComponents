@@ -7,10 +7,10 @@ namespace snake
 {
 	namespace core
 	{
-		using condition_variable = std::condition_variable;
-		using condition_variable_any = std::condition_variable_any;
+		using ConditionVariable = std::condition_variable;
+		using ConditionVariableAny = std::condition_variable_any;
 
-		using cv_status = std::cv_status;
+		using CvStatus = std::cv_status;
 	}
 }
 

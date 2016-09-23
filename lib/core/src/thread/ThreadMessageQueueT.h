@@ -13,7 +13,7 @@ namespace snake
 		template<typename T, 
 			template<typename T> class ContainerT = QueueT,
 			template<typename T> class ExitStrategyT = exit_after_handle_all,
-			typename LockT = mutex>
+			typename LockT = Mutex>
 		class ThreadMessageQueueT
 		{
 		public:
@@ -30,7 +30,7 @@ namespace snake
 
 			bool push( T&& t )
 			{
-				unique_lock<LockT> guard( lock_ );
+				UniqueLock<LockT> guard( lock_ );
 				if (!exit_strategy_.push_stopped(list_))
 				{
 					list_.push( std::move( t ) );
@@ -41,7 +41,7 @@ namespace snake
 			}
 			bool pop(T& t)
 			{
-				unique_lock<LockT> guard( lock_ );
+				UniqueLock<LockT> guard( lock_ );
 				while (!exit_strategy_.pop_stopped( list_ ) && list_.empty())
 				{
 					cv_.wait_for( guard, std::chrono::milliseconds( 50 ) );
@@ -56,13 +56,13 @@ namespace snake
 			}
 			bool empty() const
 			{
-				unique_lock<LockT> guard( lock_ );
+				UniqueLock<LockT> guard( lock_ );
 				return list_.empty();
 			}
 
 			void stop()
 			{
-				unique_lock<LockT> guard( lock_ );
+				UniqueLock<LockT> guard( lock_ );
 				if (exit_strategy_.available_stop( list_ ))
 				{
 					exit_strategy_.stop();
@@ -74,7 +74,7 @@ namespace snake
 			{
 				typename ContainerT<T>::CollectionType col;
 				{
-					unique_lock<LockT> guard( lock_ );
+					UniqueLock<LockT> guard( lock_ );
 					list_.swap( col );
 				}
 				for (auto& t : col)
@@ -85,7 +85,7 @@ namespace snake
 		private:
 			ContainerT<T> list_;
 			LockT lock_;
-			condition_variable cv_;
+			ConditionVariable cv_;
 			ExitStrategyT<ContainerT<T>> exit_strategy_;
 		};
 	}

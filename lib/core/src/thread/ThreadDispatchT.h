@@ -23,7 +23,7 @@ namespace snake
 				return N_ == 1 ? 0 : (num_++) % N_;
 			}
 		private:
-			atomic<unsigned long> num_;
+			Atomic<unsigned long> num_;
 			size_t N_;
 		};
 	}

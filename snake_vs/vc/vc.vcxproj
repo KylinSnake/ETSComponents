@@ -77,6 +77,7 @@
     <RemoteBuildCommandLine>(chmod a+x $(RemoteRootDir)/build.sh  &amp;&amp; $(RemoteRootDir)/build.sh )</RemoteBuildCommandLine>
     <RemoteReBuildCommandLine>(chmod a+x $(RemoteRootDir)/build.sh  &amp;&amp; $(RemoteRootDir)/build.sh rebuild)</RemoteReBuildCommandLine>
     <RemoteCleanCommandLine>(chmod a+x $(RemoteRootDir)/build.sh  &amp;&amp; $(RemoteRootDir)/build.sh clean )</RemoteCleanCommandLine>
+    <NMakeIncludeSearchPath>C:\Users\Roy\Source\Repos\snake\lib\core\src\log;C:\Users\Roy\Source\Repos\snake\lib\core\src\util;C:\Users\Roy\Source\Repos\snake\lib\core\src\thread;..\..\..\tp\boost_1_61_0;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <RemoteBuildCommandLine>(chmod a+x $(RemoteRootDir)/build.sh  &amp;&amp; $(RemoteRootDir)/build.sh release)</RemoteBuildCommandLine>
@@ -86,33 +87,43 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\..\CMakeLists.txt" />
-    <ClCompile Include="..\..\lib\core\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\lib\core\test.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\lib\core\Atomic.h" />
-    <ClInclude Include="..\..\lib\core\ConditionVariable.h" />
-    <ClInclude Include="..\..\lib\core\Future.h" />
-    <ClInclude Include="..\..\lib\core\Mutex.h" />
-    <ClInclude Include="..\..\lib\core\ThreadExitStrategyT.h" />
-    <ClInclude Include="..\..\lib\core\ThreadGroupT.h" />
-    <ClInclude Include="..\..\lib\core\Thread.h" />
-    <ClInclude Include="..\..\lib\core\ThreadDispatchT.h" />
-    <ClInclude Include="..\..\lib\core\ThreadMessageContainerT.h" />
-    <ClInclude Include="..\..\lib\core\ThreadMessageQueueT.h" />
-    <ClInclude Include="..\..\lib\core\ThreadQueueGroupT.h" />
+    <ClCompile Include="..\..\lib\core\src\log\logFile.cpp" />
+    <ClCompile Include="..\..\lib\core\src\log\logger.cpp" />
+    <ClCompile Include="..\..\lib\core\src\test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\build.sh">
       <FileType>Script</FileType>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\lib\core\src\log\logFile.hpp" />
+    <ClInclude Include="..\..\lib\core\src\log\logger.hpp" />
+    <ClInclude Include="..\..\lib\core\src\thread\Atomic.h" />
+    <ClInclude Include="..\..\lib\core\src\thread\ConditionVariable.h" />
+    <ClInclude Include="..\..\lib\core\src\thread\Future.h" />
+    <ClInclude Include="..\..\lib\core\src\thread\Mutex.h" />
+    <ClInclude Include="..\..\lib\core\src\thread\Thread.h" />
+    <ClInclude Include="..\..\lib\core\src\thread\ThreadDispatchT.h" />
+    <ClInclude Include="..\..\lib\core\src\thread\ThreadExitStrategyT.h" />
+    <ClInclude Include="..\..\lib\core\src\thread\ThreadGroup.h" />
+    <ClInclude Include="..\..\lib\core\src\thread\ThreadGroupT.h" />
+    <ClInclude Include="..\..\lib\core\src\thread\ThreadMessageContainerT.h" />
+    <ClInclude Include="..\..\lib\core\src\thread\ThreadMessageQueueT.h" />
+    <ClInclude Include="..\..\lib\core\src\thread\ThreadQueueGroupT.h" />
+    <ClInclude Include="..\..\lib\core\src\util\SingletonT.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\lib\core\src\CMakeLists.txt" />
+  </ItemGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <RemotePostBuildEvent>
       <Command>(chmod a+x $(RemoteRootDir)/build.sh  &amp;&amp; $(RemoteRootDir)/build.sh install)</Command>
     </RemotePostBuildEvent>
+    <RemotePreBuildEvent>
+      <Command>
+      </Command>
+    </RemotePreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

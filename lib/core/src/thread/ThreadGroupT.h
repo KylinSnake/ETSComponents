@@ -42,25 +42,25 @@ namespace snake
 			ThreadGroupT( const ThreadGroupT & ) = delete;
 			ThreadGroupT& operator=( const ThreadGroupT& ) = delete;
 
-			future<R> push( T&& t)
+			Future<R> push( T&& t)
 			{
-				promise<R> p;
-				future<R> f = p.get_future();
+				Promise<R> p;
+				Future<R> f = p.get_future();
 				if (queue_group_.get_queue( dispatcher_.next( t ) ).push( std::make_tuple( std::move( t ), std::move( p ) ) ))
 				{
 					return f;
 				}
-				return future<R>();
+				return Future<R>();
 			}
 
 			void start()
 			{
 				for (size_t i = 0; i < num_; ++i)
 				{
-					QueueT<std::tuple<T, promise<R>>>& queue = queue_group_.get_queue( i );
-					threads_[i].reset( new thread( [&queue, this]
+					QueueT<std::tuple<T, Promise<R>>>& queue = queue_group_.get_queue( i );
+					threads_[i].reset( new Thread( [&queue, this]
 					{
-						std::tuple<T, promise<R>> t;
+						std::tuple<T, Promise<R>> t;
 						while (queue.pop( t ))
 						{
 							try
@@ -76,7 +76,7 @@ namespace snake
 								catch (...){}
 							}
 						}
-						queue.clear( [] ( std::tuple<T, promise<R>>& t )
+						queue.clear( [] ( std::tuple<T, Promise<R>>& t )
 						{
 							std::get<1>( t ).set_exception( std::make_exception_ptr( std::bad_exception() ) );
 						} );
@@ -101,10 +101,10 @@ namespace snake
 		private:
 			WorkFunction func_;
 			size_t num_;
-			QueueGroupT<std::tuple<T, promise<R>>, QueueT> queue_group_;
+			QueueGroupT<std::tuple<T, Promise<R>>, QueueT> queue_group_;
 			DispatchT<T> dispatcher_;
-			std::vector<std::unique_ptr<thread>> threads_;
-			atomic_flag flag_;
+			std::vector<std::unique_ptr<Thread>> threads_;
+			AtomicFlag flag_;
 		};
 
 	}
