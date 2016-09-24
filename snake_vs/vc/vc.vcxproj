@@ -87,8 +87,8 @@
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\..\CMakeLists.txt" />
-    <ClCompile Include="..\..\lib\core\src\log\logFile.cpp" />
-    <ClCompile Include="..\..\lib\core\src\log\logger.cpp" />
+    <ClCompile Include="..\..\lib\core\src\log\LogFile.cpp" />
+    <ClCompile Include="..\..\lib\core\src\log\Logger.cpp" />
     <ClCompile Include="..\..\lib\core\src\test.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -97,8 +97,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\lib\core\src\log\logFile.hpp" />
-    <ClInclude Include="..\..\lib\core\src\log\logger.hpp" />
+    <ClInclude Include="..\..\lib\core\src\log\LogFile.hpp" />
+    <ClInclude Include="..\..\lib\core\src\log\Logger.hpp" />
     <ClInclude Include="..\..\lib\core\src\thread\Atomic.h" />
     <ClInclude Include="..\..\lib\core\src\thread\ConditionVariable.h" />
     <ClInclude Include="..\..\lib\core\src\thread\Future.h" />
@@ -124,6 +124,10 @@
       <Command>
       </Command>
     </RemotePreBuildEvent>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

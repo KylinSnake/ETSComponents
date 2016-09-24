@@ -5,7 +5,7 @@ namespace snake
 {
 	namespace core
 	{
-		template<T>
+		template<typename T>
 		class SingletonT
 		{
 		public:
@@ -20,7 +20,7 @@ namespace snake
 				static T t;
 				return t;
 			}
-		private:
+		protected:
 			SingletonT() = default;
 
 		};

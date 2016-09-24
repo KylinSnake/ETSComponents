@@ -6,15 +6,18 @@
 #include <vector>
 #include <tuple>
 #include <algorithm>
+#include <type_traits>
 #include "Mutex.h"
 #include "ConditionVariable.h"
 #include "Thread.h"
+#include "Future.h"
 #include "Atomic.h"
 
 namespace snake
 {
 	namespace core
 	{
+
 		template<class T
 			, class R
 			, template<class T, template<class T> class QueueT> class QueueGroupT
@@ -25,7 +28,7 @@ namespace snake
 		{
 		public:
 			using WorkFunction = std::function<R( T& )>;
-			ThreadGroupT( WorkFunction&& func, size_t num ) 
+			ThreadGroupT( WorkFunction&& func, size_t num = 1) 
 				: func_(std::move(func))
 				, num_(num)
 				, queue_group_(num)
@@ -53,6 +56,17 @@ namespace snake
 				return Future<R>();
 			}
 
+			void invoke( Promise<R> & p, T& t, std::true_type )
+			{
+				func_( t );
+				p.set_value();
+			}
+
+			void invoke( Promise<R> & p, T& t, std::false_type )
+			{
+				p.set_value( func_( t ) );
+			}
+
 			void start()
 			{
 				for (size_t i = 0; i < num_; ++i)
@@ -65,7 +79,9 @@ namespace snake
 						{
 							try
 							{
-								std::get<1>(t).set_value( this->func_( std::get<0>(t) ));
+								//set_future_value<R, WorkFunction>( std::get<1>( t ), func_, std::get<0>( t ) );
+								invoke( std::get<1>( t ), std::get<0>( t ), std::is_void<R>() );
+								//std::get<1>(t).set_value( this->func_( std::get<0>(t) ));
 							}
 							catch (...)
 							{

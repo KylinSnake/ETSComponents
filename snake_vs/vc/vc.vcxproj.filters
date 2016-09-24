@@ -28,10 +28,10 @@
     <ClCompile Include="..\..\lib\core\src\CMakeLists.txt">
       <Filter>lib\core\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\core\src\log\logFile.cpp">
+    <ClCompile Include="..\..\lib\core\src\log\LogFile.cpp">
       <Filter>lib\core\src\log</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\core\src\log\logger.cpp">
+    <ClCompile Include="..\..\lib\core\src\log\Logger.cpp">
       <Filter>lib\core\src\log</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,13 +75,13 @@
     <ClInclude Include="..\..\lib\core\src\thread\ThreadQueueGroupT.h">
       <Filter>lib\core\src\thread</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\core\src\log\logFile.hpp">
-      <Filter>lib\core\src\log</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\core\src\util\SingletonT.h">
       <Filter>lib\core\src\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\core\src\log\logger.hpp">
+    <ClInclude Include="..\..\lib\core\src\log\LogFile.hpp">
+      <Filter>lib\core\src\log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\core\src\log\Logger.hpp">
       <Filter>lib\core\src\log</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,14 +12,15 @@ namespace snake
 			~LogFile();
 			LogFile( const LogFile& ) = delete;
 			LogFile& operator=(const LogFile&) = delete;
-			int open( const char* filename, size_t size_of_block, size_t init_blocks, size_t cap_allocate_blocks, size_t max_blocks );
+			int open( const char* filename, size_t size_of_block, size_t init_blocks, size_t max_blocks );
 			void close();
-			bool isOpen() const;
-			bool isEOF() const;
+			bool is_open() const;
 			size_t allocate( size_t n = 1 );
-			bool forward_move( size_t n = 1 );
+			void forward_move( size_t n = 1 );
+			size_t allocated_blocks() const;
 			size_t current_block() const;
 			size_t size_of_block() const;
+			size_t max_blocks() const;
 			int fd() const;
 		private:
 			int fd_;
