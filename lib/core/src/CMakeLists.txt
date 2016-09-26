@@ -19,7 +19,7 @@ ENDIF(sources)
 
 INSTALL(FILES ${headers} DESTINATION include/core)
 
-ADD_EXECUTABLE(MyTest test.cpp)
+ADD_EXECUTABLE(MyTest test.cpp ${sources})
 IF (sources)
 	ADD_DEPENDENCIES(MyTest core_shared)
 ENDIF (sources)

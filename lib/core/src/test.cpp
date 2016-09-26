@@ -2,16 +2,26 @@
 
 #include "Future.h"
 #include "ThreadGroup.h"
+#include "Logger.hpp"
+#include "Log.h"
 #include <iostream>
 #include <vector>
 
 
 int main()
 {
-	std::cout << global::current_thread::get_id() << std::endl;
-
+	snake::core::Logger::instance().init( "test", "/tmp", LogLevel::INFO );
+	snake::core::Logger::instance().start();
+	LOG_INFO << "INFO" << ENDLOG;
+	LOG_DEBUG << "DEBUG" << ENDLOG;
+	LOG_TRACE << "TRACE" << ENDLOG;	
+	LOG_INFO << "INFO2" << ENDLOG;
+	LOG_DEBUG << "DEBUG2" << ENDLOG;
+	LOG_TRACE << "TRACE2" << ENDLOG;
+	
 	snake::core::EventLoopExecutor<int, std::tuple<int, snake::core::ThreadId>> group( [] ( int i )
 	{
+		LOG_INFO << "In side the thread, i = " << i<< ENDLOG;
 		return std::make_tuple(i, global::current_thread::get_id());
 	}, 4 );
 	group.start();
@@ -34,18 +44,19 @@ int main()
 			if (vec[i].valid() && vec[i].wait_for( std::chrono::seconds( 1 ) ) == snake::core::FutureStatus::ready)
 			{
 				auto result = vec[i].get();
-				std::cout << "int i = " << std::get<0>( result ) << ", thread Id = " << std::get<1>( result ) << std::endl;
+				LOG_INFO << "int i = " << std::get<0>( result ) << ENDLOG;
 			}
 			else
 			{
-				std::cout << "int i = " << i << " invalid" << std::endl;
+				LOG_ERROR<< "int i = " << i << " invalid" << ENDLOG;
 			}
 		}
 		catch (const std::exception& e)
 		{
-			std::cout << "int i = " << i << " has Exception: " << e.what() << std::endl;
+			LOG_ERROR << "int i = " << i << " has Exception: " << e.what() << ENDLOG;
 		}
 	}
 
+	snake::core::Logger::instance().stop();
 	return 0;
 }

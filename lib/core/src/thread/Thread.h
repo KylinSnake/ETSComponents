@@ -2,13 +2,14 @@
 #define SNAKE_CORE_THREAD_H
 
 #include <thread>
+#include <pthread.h>
 
 namespace snake
 {
 	namespace core
 	{
 		using Thread = std::thread;
-		using ThreadId = std::thread::id;
+		using ThreadId = unsigned long;
 	}
 }
 
@@ -18,7 +19,7 @@ namespace global
 	{
 		inline snake::core::ThreadId get_id() noexcept
 		{
-			return std::this_thread::get_id();
+			return static_cast<snake::core::ThreadId>(pthread_self());
 		}
 		
 		inline void yield() noexcept

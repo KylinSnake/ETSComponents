@@ -3,7 +3,7 @@
 
 #include <string>
 #include <boost/pool/pool.hpp>
-#include "LogFile.hpp"
+#include "LogUtil.h"
 #include "SingletonT.h"
 #include "ThreadGroup.h"
 
@@ -16,14 +16,6 @@ namespace snake
 		public:
 			Logger();
 			~Logger();
-			enum LogLevel
-			{
-				TRACE = 0,
-				DEBUG = 1,
-				INFO = 2,
-				WARNING = 3,
-				ERROR = 4
-			};
 
 			// for now, we only use filename and some fix value to initialize,
 			// in future, we will use config to initialize
@@ -31,40 +23,30 @@ namespace snake
 			void start();
 			void stop();
 
-			struct LogItem
+			LogLevel log_level() const
 			{
-				size_t length;
-				char* data;
-			};
-			typedef struct
-			{
-				LogLevel level;
-				std::list<LogItem> items;
-			} LogRecord;
+				return level_;
+			}
 
 			LogItem alloc_log_item();
-			void push( LogRecord&& item );
+			void push( std::list<LogItem>&& list );
+			void release( std::list<LogItem>&& list );
 
 		protected:
-			void handle_record( std::pair<pid_t, LogRecord>& );
 			void close_log();
 			bool open_log();
-			bool is_open() const;
-			bool write( const char*, size_t len );
+			size_t write( const char*, size_t len );
 			bool rotate_file();
-			static const char * logLevel_to_string( LogLevel l );
 		private:
-			LogFile file_;
-			size_t block_size_;
-			size_t max_blocks_;
-			size_t blocks_in_chunk_;
+			int fd_;
+			uint64_t max_size_;
+			uint64_t current_size_;
 			std::string filename_;
 			size_t file_seq_;
-			char* start_;
-			size_t avail_in_current_chunk_;
 
 			std::unique_ptr<boost::pool<>> pool_ptr_;
-			std::unique_ptr<EventLoopExecutor<std::pair<pid_t, LogRecord>>> loop_ptr_;
+			Mutex pool_lock_;
+			std::unique_ptr<EventLoopExecutor<std::list<LogItem>>> loop_ptr_;
 			size_t log_item_data_capacity_;
 			bool is_started_;
 			LogLevel level_;

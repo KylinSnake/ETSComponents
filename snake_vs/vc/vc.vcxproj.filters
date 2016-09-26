@@ -28,10 +28,10 @@
     <ClCompile Include="..\..\lib\core\src\CMakeLists.txt">
       <Filter>lib\core\src</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\core\src\log\LogFile.cpp">
+    <ClCompile Include="..\..\lib\core\src\log\Logger.cpp">
       <Filter>lib\core\src\log</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\core\src\log\Logger.cpp">
+    <ClCompile Include="..\..\lib\core\src\log\Log.cpp">
       <Filter>lib\core\src\log</Filter>
     </ClCompile>
   </ItemGroup>
@@ -78,10 +78,13 @@
     <ClInclude Include="..\..\lib\core\src\util\SingletonT.h">
       <Filter>lib\core\src\util</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\core\src\log\LogFile.hpp">
+    <ClInclude Include="..\..\lib\core\src\log\Logger.hpp">
       <Filter>lib\core\src\log</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\core\src\log\Logger.hpp">
+    <ClInclude Include="..\..\lib\core\src\log\Log.h">
+      <Filter>lib\core\src\log</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\core\src\log\LogUtil.h">
       <Filter>lib\core\src\log</Filter>
     </ClInclude>
   </ItemGroup>
