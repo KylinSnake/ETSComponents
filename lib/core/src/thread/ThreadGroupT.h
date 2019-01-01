@@ -20,9 +20,9 @@ namespace snake
 
 		template<class T
 			, class R
-			, template<class T, template<class T> class QueueT> class QueueGroupT
-			, template<class T> class DispatchT
-			, template<class T> class QueueT
+			, template<class U, template<class S> class QueueT> class QueueGroupT
+			, template<class V> class DispatchT
+			, template<class W> class QueueT
 		>
 			class ThreadGroupT
 		{

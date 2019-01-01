@@ -2,8 +2,8 @@
 #define SNAKE_CORE_LOGGER_HPP
 
 #include <string>
-#include <boost/pool/pool.hpp>
 #include "LogUtil.h"
+#include "BufferPool.h"
 #include "SingletonT.h"
 #include "ThreadGroup.h"
 
@@ -44,7 +44,7 @@ namespace snake
 			std::string filename_;
 			size_t file_seq_;
 
-			std::unique_ptr<boost::pool<>> pool_ptr_;
+			std::unique_ptr<BufferPool<char>> pool_ptr_;
 			Mutex pool_lock_;
 			std::unique_ptr<EventLoopExecutor<std::list<LogItem>>> loop_ptr_;
 			size_t log_item_data_capacity_;

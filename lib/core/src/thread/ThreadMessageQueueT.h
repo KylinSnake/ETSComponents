@@ -11,8 +11,8 @@ namespace snake
 	namespace core
 	{
 		template<typename T, 
-			template<typename T> class ContainerT = QueueT,
-			template<typename T> class ExitStrategyT = exit_after_handle_all,
+			template<typename U> class ContainerT = QueueT,
+			template<typename V> class ExitStrategyT = exit_after_handle_all,
 			typename LockT = Mutex>
 		class ThreadMessageQueueT
 		{

@@ -17,17 +17,17 @@ namespace snake
 
 		template<typename T,
 			typename R = void,
-			template<typename T> class DispatchT = RoundRobinDispatchT,
-			template<typename T> class QueueT = DefaultThreadMessageQueueT
+			template<typename U> class DispatchT = RoundRobinDispatchT,
+			template<typename V> class QueueT = DefaultThreadMessageQueueT
 		>
-			using TaskExecutor = ThreadGroupT <T, R, SharedQueueGroupT, DispatchT, DefaultThreadMessageQueueT>;
+		using TaskExecutor = ThreadGroupT <T, R, SharedQueueGroupT, DispatchT, DefaultThreadMessageQueueT>;
 
 		template<typename T,
 			typename R = void,
-			template<typename T> class DispatchT = RoundRobinDispatchT,
-			template<typename T> class QueueT = DefaultThreadMessageQueueT
+			template<typename U> class DispatchT = RoundRobinDispatchT,
+			template<typename V> class QueueT = DefaultThreadMessageQueueT
 		>
-			using EventLoopExecutor = ThreadGroupT <T, R, DedicatedQueueGroupT, DispatchT, DefaultThreadMessageQueueT>;
+		using EventLoopExecutor = ThreadGroupT <T, R, DedicatedQueueGroupT, DispatchT, DefaultThreadMessageQueueT>;
 	}
 }
 

@@ -8,7 +8,7 @@ namespace snake
 {
 	namespace core
 	{
-		template<class T, template<class T> class QueueT>
+		template<class T, template<class U> class QueueT>
 		class SharedQueueGroupT
 		{
 		public:
@@ -30,7 +30,7 @@ namespace snake
 			QueueT<T> queue_;
 		};
 
-		template<class T, template<class T> class QueueT>
+		template<class T, template<class U> class QueueT>
 		class DedicatedQueueGroupT
 		{
 		public:

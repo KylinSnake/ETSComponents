@@ -1,3 +1,6 @@
 # git ignore file
 *.db
 *.opendb
+*.swp
+build/*
+install/*

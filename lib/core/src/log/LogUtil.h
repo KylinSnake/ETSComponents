@@ -1,6 +1,8 @@
 #ifndef SNAKE_CORE_LOGUTIL_H
 #define SNAKE_CORE_LOGUTIL_H
 
+#include <cassert>
+
 enum class LogLevel
 {
 	TRACE = 0,

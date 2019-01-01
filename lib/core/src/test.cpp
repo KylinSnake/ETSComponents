@@ -2,7 +2,7 @@
 
 #include "Future.h"
 #include "ThreadGroup.h"
-#include "Logger.hpp"
+#include "Logger.h"
 #include "Log.h"
 #include <iostream>
 #include <vector>

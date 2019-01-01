@@ -6,7 +6,7 @@
 #include <cassert>
 #include <ctime>
 #include <cstring>
-#include "Logger.hpp"
+#include "Logger.h"
 
 constexpr size_t ONE_MEGA = 1024 * 1024;
 constexpr size_t MAX_FILE_SIZE = 10 * 1024 * ONE_MEGA; // 10G
@@ -46,7 +46,7 @@ namespace snake
 
 			log_item_data_capacity_ = 128;
 			level_ = l;
-			pool_ptr_.reset( new boost::pool<>( log_item_data_capacity_ ) );
+			pool_ptr_.reset( new BufferPool<char>( log_item_data_capacity_ ) );
 			loop_ptr_.reset( new EventLoopExecutor<std::list<LogItem>>( [this] ( std::list<LogItem>& r )
 			{
 				char time[128];
