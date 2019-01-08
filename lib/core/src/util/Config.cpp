@@ -23,14 +23,20 @@ namespace snake
 				throw WrongTypeException();
 			}
 		}
-		Config Config::create_config_from_file(const std::string& file_path)
+
+		void Config::init_from_file(const std::string& file_path)
 		{
-			return Config(YAML::LoadFile(file_path));
+			root_node_ = YAML::LoadFile(file_path);
 		}
 
-		Config::Config(const YAML::Node& node)
-		: root_node_(node)
+		void Config::init_from_string(const std::string& string)
 		{
+			root_node_ = YAML::Load(string);
+		}
+
+		void Config::init_from_string(const char* string)
+		{
+			root_node_ = YAML::Load(string);
 		}
 
 		ConfigNode Config::root() const
@@ -53,9 +59,9 @@ namespace snake
 			return get_node_value<int>(node_[name]);
 		}
 
-		float ConfigNode::get_float_value(const std::string& name) const
+		double ConfigNode::get_float_value(const std::string& name) const
 		{
-			return get_node_value<float>(node_[name]);
+			return get_node_value<double>(node_[name]);
 		}
 
 		bool ConfigNode::get_boolean_value(const std::string& name) const
@@ -83,14 +89,19 @@ namespace snake
 			return value;
 		}
 
-		float ConfigNode::get_float_with_default(const std::string& name, float value) const
+		double ConfigNode::get_float_with_default(const std::string& name, double value) const
 		{
 			try
 			{
-				return get_node_value<float>(node_[name]);
+				return get_node_value<double>(node_[name]);
 			}
 			catch(...){}
 			return value;
+		}
+
+		const std::string& ConfigNode::name() const
+		{
+			return node_.Tag();
 		}
 
 		bool ConfigNode::get_boolean_with_default(const std::string& name, bool value) const
@@ -124,14 +135,14 @@ namespace snake
 			return ret;
 		}
 
-		std::list<float> ConfigNode::get_float_list_of_children() const
+		std::list<double> ConfigNode::get_float_list_of_children() const
 		{
-			std::list<float> ret;
-			std::for_each(node_.begin(), node_.end(), [&ret](const YAML::Node& n){ ret.push_back(get_node_value<float>(n));});
+			std::list<double> ret;
+			std::for_each(node_.begin(), node_.end(), [&ret](const YAML::Node& n){ ret.push_back(get_node_value<double>(n));});
 			return ret;
 		}
 
-		std::list<bool> ConfigNode::get_bool_list_of_children() const
+		std::list<bool> ConfigNode::get_boolean_list_of_children() const
 		{
 			std::list<bool> ret;
 			std::for_each(node_.begin(), node_.end(), [&ret](const YAML::Node& n){ ret.push_back(get_node_value<bool>(n));});

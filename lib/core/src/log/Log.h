@@ -135,6 +135,7 @@ inline Log& operator<<( Log& l, __LOGEND_T )
 #define LOG_INFO LOG_VAR(INFO)
 #define LOG_WARN LOG_VAR(WARN)
 #define LOG_ERROR LOG_VAR(ERROR)
+#define LOG_FATAL LOG_VAR(FATAL)
 
 #define ENDLOG " (" << std::string(__FILE__).substr(std::string(__FILE__).rfind('/') + 1) <<", Line: " << __LINE__ << ")" <<  __LOGEND_T();
 

@@ -21,7 +21,7 @@ namespace snake
 
 			std::string name() const { return name_; }
 
-			bool initialize(const ConfigNode& node);
+			bool initialize(const std::string& name, const ConfigNode& node);
 			virtual bool reload(const ConfigNode& node) { return true; }
 
 			void start();
@@ -30,6 +30,7 @@ namespace snake
 
 			bool is_running() const { return is_running_; }
 			bool is_stopping() const { return is_stopping_; }
+			bool is_initialized() const { return is_initialized_;}
 		protected:
 			virtual bool init(const ConfigNode& node);
 			virtual void before_start(){}
@@ -42,10 +43,15 @@ namespace snake
 		private:
 			bool is_running_ {false};
 			bool is_stopping_ {false};
+			bool is_initialized_{false};
 			std::string name_{};
 		};
 
 		using ServicePointer = std::shared_ptr<Service>;
+
+		template<class T>
+		using ServicePointerT = std::shared_ptr<T>;
+
 	}
 }
 

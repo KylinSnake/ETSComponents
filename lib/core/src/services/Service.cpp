@@ -1,17 +1,15 @@
 #include <Service.h>
+#include <Log.h>
 
 namespace snake
 {
 	namespace core
 	{
-		bool Service::initialize(const ConfigNode& config)
+		bool Service::initialize(const std::string& name, const ConfigNode& config)
 		{
-			if (config.has_child("name"))
-			{
-				name_ = config.get_string_value("name");
-				return init(config);
-			}
-			return false;
+			name_ = name;
+			is_initialized_ = init(config);
+			return is_initialized_;
 		}
 
 		bool Service::init(const ConfigNode& config)
@@ -24,8 +22,10 @@ namespace snake
 			if (!(is_running_ || is_stopping_))
 			{
 				before_start();
+				LOG_INFO << "Starting service " << name_ << ENDLOG;
 				is_running_ = true;
 				on_start();
+				LOG_INFO << "Service " << name_  << " started" << ENDLOG;
 			}
 		}
 
@@ -34,6 +34,7 @@ namespace snake
 			if(is_running_ && !is_stopping_)
 			{
 				before_stop();
+				LOG_INFO << "Stopping service " << name_ << ENDLOG;
 				is_running_ = false;
 				is_stopping_ = true;
 				on_stop();
@@ -47,6 +48,7 @@ namespace snake
 				on_join();
 				is_stopping_ = false;
 				on_stopped();
+				LOG_INFO << "Service " << name_ << " stopped" << ENDLOG;
 			}
 		}
 	}

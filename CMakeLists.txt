@@ -1,8 +1,10 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.5)
 
 project(snake C CXX)
 
 enable_testing()
+include(CTest)
+
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 if( DEFINED ENV{TP_PATH} )
@@ -17,3 +19,4 @@ include(tp)
 
 add_subdirectory(lib/core/src)
 
+add_subdirectory(lib/core/test)

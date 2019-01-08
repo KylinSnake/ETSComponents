@@ -1,5 +1,5 @@
-#ifndef SNAKE_CORE_SERVICE_FACTORY_H
-#define SNAKE_CORE_SERVICE_FACTORY_H
+#ifndef SNAKE_CORE_SERVICE_FACTORY_HPP
+#define SNAKE_CORE_SERVICE_FACTORY_HPP
 
 #include <map>
 #include <string>

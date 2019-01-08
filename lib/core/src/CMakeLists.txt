@@ -3,17 +3,17 @@ foreach (folder thread log util services)
 	file(GLOB folder_h ${folder}/*.h)
 	list(APPEND sources ${folder_cpp})
 	list(APPEND headers ${folder_h})
-	include_directories(${folder})
+	list(APPEND folders ${CMAKE_CURRENT_SOURCE_DIR}/${folder})
 endforeach(folder)
 
 if (sources)
-	add_library(libcore SHARED ${sources})
-	target_link_libraries(libcore PUBLIC pthread PUBLIC yaml)
-	
-	install(TARGETS libcore DESTINATION lib)
+	include_directories(${folders})
+	add_library(core SHARED ${sources})
+	target_link_libraries(core pthread dl yaml)
 
-	add_executable(core_test test.cpp)
-	target_link_libraries(core_test libcore)
+	set_property(TARGET core PROPERTY "include_path" ${folders})
+	
+	install(TARGETS core DESTINATION lib)
 
 endif(sources)
 

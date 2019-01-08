@@ -19,8 +19,9 @@ namespace snake
 
 			// for now, we only use filename and some fix value to initialize,
 			// in future, we will use config to initialize
-			bool init( const char* filename, const char* filepath, LogLevel );
-			void start();
+			void set_log_file_name(const char* filename, const char* filepath);
+			void set_log_level(LogLevel l);
+			bool start();
 			void stop();
 
 			LogLevel log_level() const
@@ -32,6 +33,8 @@ namespace snake
 			void push( std::list<LogItem>&& list );
 			void release( std::list<LogItem>&& list );
 
+			const std::string& filename() const { return filename_; }
+
 		protected:
 			void close_log();
 			bool open_log();
@@ -42,7 +45,6 @@ namespace snake
 			uint64_t max_size_;
 			uint64_t current_size_;
 			std::string filename_;
-			size_t file_seq_;
 
 			std::unique_ptr<BufferPool<char>> pool_ptr_;
 			Mutex pool_lock_;

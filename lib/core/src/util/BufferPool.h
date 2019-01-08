@@ -21,6 +21,21 @@ namespace snake
 				fill(capacity);
 			}
 
+			size_t buffer_length() const
+			{
+				return length_;
+			}
+
+			size_t capacity() const
+			{
+				return allocated_.size() + available_.size();
+			}
+
+			size_t size() const
+			{
+				return allocated_.size();
+			}
+
 			~BufferPool()
 			{
 				std::for_each(available_.begin(), available_.end(), [](pointer_type p){ delete[] p; });
@@ -32,7 +47,7 @@ namespace snake
 			{
 				if (available_.size() == 0)
 				{
-					fill(allocated_.size() * 2);
+					fill(allocated_.size());
 				}
 				pointer_type ret = available_.front();
 				available_.pop_front();

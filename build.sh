@@ -5,6 +5,7 @@ BUILD=1
 INSTALL=0
 CLEAN=0
 PARAM=
+TEST=0
 
 for opt in $@
 do
@@ -14,6 +15,7 @@ do
       INSTALL=1
       BUILD=1
       CLEAN=1
+	  TEST=1
       ;;
 
     BUILD)
@@ -40,6 +42,12 @@ do
 
      DEBUG)
        DEBUG=1
+	   TEST=1
+       ;;
+
+     TEST)
+       DEBUG=1
+	   TEST=1
        ;;
 
      *)
@@ -100,6 +108,14 @@ if [ $BUILD -eq 1 ]; then
   if [ $? -ne 0 ];then
     exit -1
   fi
+fi
+
+if [ $TEST -eq 1 ]; then
+	echo "[COMMAND]: make test"
+	make CTEST_OUTPUT_ON_FAILURE=1 test
+	if [ $? -ne 0 ];then
+		exit -1
+	fi
 fi
   
 if [ $INSTALL -eq 1 ];then
