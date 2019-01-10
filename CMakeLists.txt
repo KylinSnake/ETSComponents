@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.11)
 
 project(snake C CXX)
 
@@ -17,6 +17,4 @@ endif()
 include(build_env)
 include(tp)
 
-add_subdirectory(lib/core/src)
-
-add_subdirectory(lib/core/test)
+add_subdirectory(src/lib/core)

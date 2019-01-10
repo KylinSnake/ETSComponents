@@ -6,6 +6,7 @@ INSTALL=0
 CLEAN=0
 PARAM=
 TEST=0
+CMAKE_PARAM=
 
 for opt in $@
 do
@@ -51,7 +52,11 @@ do
        ;;
 
      *)
-       PARAM="$PARAM $opt "
+       if [ ${opt:0:2} == '-D' ]; then
+		   CMAKE_PARAM="$CMAKE_PARAM $opt"
+	   else
+		   PARAM="$PARAM $opt "
+	   fi
        ;;
 
   esac
@@ -98,8 +103,8 @@ if [ ! -d ${BUILD_FOLDER} ]; then
 fi
 
 cd ${BUILD_FOLDER}
-echo "[COMMAND]: cmake $DTYPE `dirname ${SCRIPT_NAME}`"
-cmake $DTYPE -DPROJ_BUILD_DIR="$FOLDER" `dirname ${SCRIPT_NAME}`
+echo "[COMMAND]: cmake $DTYPE -DBUILD_SHARED_LIBS=on ${CMAKE_PARAM} `dirname ${SCRIPT_NAME}`"
+cmake $DTYPE -DPROJ_BUILD_DIR="$FOLDER" -DBUILD_SHARED_LIBS=on ${CMAKE_PARAM} `dirname ${SCRIPT_NAME}`
 echo "Build folder is ${BUILD_FOLDER}"
 
 if [ $BUILD -eq 1 ]; then
