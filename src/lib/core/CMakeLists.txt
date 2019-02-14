@@ -6,6 +6,7 @@ add_library(core
 	src/ServiceFactory.cpp
 	src/Service.cpp
 	src/Config.cpp
+	src/DateTime.cpp
 )
 
 target_include_directories(core

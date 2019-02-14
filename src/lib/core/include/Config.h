@@ -1,7 +1,7 @@
 #ifndef SNAKE_CORE_CONFIG_H
 #define SNAKE_CORE_CONFIG_H
 
-#include <yaml.h>
+#include <yaml-cpp/yaml.h>
 #include <memory>
 #include <string>
 #include <list>

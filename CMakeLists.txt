@@ -18,3 +18,4 @@ include(build_env)
 include(tp)
 
 add_subdirectory(src/lib/core)
+add_subdirectory(src/lib/message)

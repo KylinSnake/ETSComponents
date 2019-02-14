@@ -8,6 +8,7 @@
 #include <ctime>
 #include <cstring>
 #include <Logger.hpp>
+#include <DateTime.h>
 #include <String.h>
 
 constexpr size_t ONE_MEGA = 1024 * 1024;
@@ -32,12 +33,9 @@ namespace snake
 			pool_ptr_.reset( new BufferPool<char>( log_item_data_capacity_ ) );
 			loop_ptr_.reset( new EventLoopExecutor<std::list<LogItem>>( [this] ( std::list<LogItem>& r )
 			{
-				char time[128];
-				struct timeval tv;
-				gettimeofday( &tv, NULL );
-				size_t n = std::strftime( time, sizeof( time ), "%Y-%m-%d %H:%M:%S", std::localtime( &tv.tv_sec ) );
-				n += std::sprintf( time + n, ".%09ld ", tv.tv_usec );
-				write( time, n );
+				char buf[64]{0};
+				auto size = DateTime::format(buf, sizeof(buf), "%Y%m%d %H:%M:%S", DateTime::now(), 6);
+				write(buf, size);
 				for (auto& i : r)
 				{
 					write( i.data, i.length );
