@@ -1,4 +1,4 @@
-set($ENV{PKG_CONFIG_PATH} ${tp_root}/lib64/pkgconfig)
+set($ENV{PKG_CONFIG_PATH} ${tp_root}/lib/pkgconfig)
 find_package(PkgConfig REQUIRED)
 
 ## Add Yaml cpp
