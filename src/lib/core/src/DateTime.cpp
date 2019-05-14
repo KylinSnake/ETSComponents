@@ -125,7 +125,7 @@ namespace snake
 
 		bool DateTime::parse(const char* fmt, const std::string& s, DateTime& t)
 		{
-			struct tm tm_t;
+			struct tm tm_t{};
 			if(NULL != strptime(s.c_str(), fmt, &tm_t))
 			{
 				auto p = mktime(&tm_t);
@@ -145,12 +145,12 @@ namespace snake
 
 		bool DateTime::parse_date_from_default(const std::string& str, DateTime& t)
 		{
-			return parse("%Y%m%d", str, t);
+			return parse_from_default(str + "T000000", t);
 		}
 
 		bool DateTime::parse_time_from_default(const std::string& str, DateTime& t)
 		{
-			return parse("%H:%M:%S", str, t);
+			return parse("%Y%m%dT%H:%M:%S", "18991231T" + str, t);
 		}
 
 		size_t DateTime::format(char* s, size_t max, const char* fmt, const DateTime& d, uint32_t digit_lt_one_sec)
