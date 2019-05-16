@@ -36,6 +36,8 @@ namespace snake
 				const std::string& file_name() const { return file_name_; }
 
 				void print_line(const std::string& line, size_t tab_num = 0);
+				
+				void print_line() { print_line(""); }
 
 				void increment_tab() { ++current_tab_num_;}
 				void decrement_tab() { --current_tab_num_;}

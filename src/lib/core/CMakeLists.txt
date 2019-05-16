@@ -15,7 +15,7 @@ target_include_directories(core
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_link_libraries(core pthread ${CMAKE_DL_LIBS} tp::yaml)
+target_link_libraries(core ${CMAKE_DL_LIBS} yaml-cpp Threads::Threads)
 
 install(TARGETS core
 		EXPORT snakes-exports

@@ -12,11 +12,31 @@ enum MessageType
 	DATA_MESSAGE = 3;
 }
 
+message MessageFactory
+{
+	TestMessage TestMessage = 1;
+	MessageVersion MessageVersion = 2;
+	ControlMessage ControlMessage = 3;
+	DataMessage DataMessage = 4;
+	RequestMessage RequestMessage = 5;
+	ResponseMessage ResponseMessage = 6;
+}
+
 message MessageBase
 {
 	int32 major_version = 1;
 	int32 minor_version = 2;
 	google.protobuf.Timestamp created_time = 3;
+}
+
+message TestMessage
+{
+	MessageBase base = 1;
+	repeated MessageBase group = 2;
+	MessageBase msg  = 3;
+	repeated string strings = 4;
+	repeated int32 integers = 5;
+	repeated google.protobuf.Timestamp stamps = 6;
 }
 
 message MessageVersion

@@ -329,7 +329,6 @@ namespace snake
 				cpp->set_file_name("generated.cpp");
 
 				// extract enum type
-				std::vector<enum_type> enums;
 				int enum_count = file->enum_type_count();
 				for(int i = 0 ; i < enum_count; ++i)
 				{
@@ -344,6 +343,31 @@ namespace snake
 					}
 				}
 
+				// extract class type
+				int class_count = file->message_type_count();
+				for(int i = 0; i < class_count; ++i)
+				{
+					auto dsp = file->message_type(i);
+					if (dsp->name() == "MessageFactory")
+					{
+						continue;
+					}
+					auto hpp = std::make_shared<OutputHpp>();
+					auto cls = ClassType::create();
+					if(cls->parse(dsp, parent, *hpp, *cpp))
+					{
+						hpp->set_file_name(cls->name() + ".h");
+						hpp->set_path("include");
+						hpps.push_back(hpp);
+					}
+					else
+					{
+						throw std::runtime_error("Error on parse: " + dsp->name());
+					}
+				}
+
+
+				// output generated files
 				cpp->output(generator_context);
 				for(auto& i : hpps)
 				{

@@ -11,7 +11,7 @@ target_include_directories(message_generator
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/src/generator
 )
-target_link_libraries(message_generator core tp::protobuf pthread ${PROTOBUF_LIBRARY_DIRS}/libprotoc.so)
+target_link_libraries(message_generator core tp::protobuf ${PROTOBUF_LIBRARY_DIRS}/libprotoc.so)
 
 set(SRC base
 )
@@ -36,4 +36,4 @@ target_include_directories(message
 		${CDIR} ${CDIR}/include
 )
 
-target_link_libraries(message core tp::protobuf pthread)
+target_link_libraries(message core tp::protobuf)

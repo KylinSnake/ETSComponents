@@ -72,21 +72,49 @@ namespace snake
 
 				bool parse(const EnumDescriptor* dsp, std::vector<std::string>& parent_chain, OutputHpp& hpp, OutputCpp& cpp); 
 			protected:
-				std::map<int, std::string> fields;
+				std::map<int, std::string> fields_;
 			};
 
 			class FieldType
 			{
 			public:
+				FieldType() = default;
 				virtual ~FieldType() = default;
 
-				virtual void output(OutputHpp& hpp);
-				virtual void output(OutputCpp& cpp); // as field needs serialize and deserialize, it may need 2 functions here
+				using Ptr = std::shared_ptr<FieldType>;
 
-				static std::shared_ptr<FieldType> create(const FieldDescriptor* dsp, OutputHpp& hpp, OutputCpp& cpp);
+				void output_declaration(OutputHpp& hpp);
+				void output_serialize(OutputCpp& cpp, const std::string& local_var, const std::string& proto_var, const std::string& ret_bool);
+				void output_deserialize(OutputCpp& cpp, const std::string& proto_var, const std::string& local_var, const std::string& ret_bool);
+
+				static Ptr create(const FieldDescriptor* dsp, OutputHpp& hpp, OutputCpp& cpp);
+			private:
+				void output_serialize_item(OutputCpp& cpp, const std::string& local_var, const std::string& proto_var, const std::string& ret_bool);
+				void output_serialize_list(OutputCpp& cpp, const std::string& local_var, const std::string& proto_var, const std::string& ret_bool);
+				
+				void output_deserialize_item(OutputCpp& cpp, const std::string& proto_var, const std::string& local_var, const std::string& ret_bool);
+				void output_deserialize_list(OutputCpp& cpp, const std::string& proto_var, const std::string& local_var, const std::string& ret_bool);
+				
+				std::string name_ {};
+				std::string cpp_type_ {};
+				FieldDescriptor::CppType dsp_cpp_type_enum_ {};
+				bool is_list_ {false};
+				bool is_map_ {false};
+			};
+
+			class ClassType : public TypeT<ClassType>
+			{
+			public:
+				ClassType() = default;
+				virtual ~ClassType() = default;
+
+				virtual void output(OutputHpp& hpp) override;
+				virtual void output(OutputCpp& cpp) override;
+
+				bool parse(const Descriptor* dsp, std::vector<std::string>& parent_chain, OutputHpp& hpp, OutputCpp& cpp);
 			protected:
-				virtual bool parse_field(const FieldDescriptor* dsp, OutputHpp& hpp, OutputCpp& cpp) = 0;
-				FieldType() = default;
+				std::map<int, FieldType::Ptr> fields_;
+				std::string base_type_{};
 			};
 		}
 	}

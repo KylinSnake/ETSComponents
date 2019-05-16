@@ -1,5 +1,5 @@
 #ifndef SNAKE_CORE_DATETIME_H
-#define SNAEK_CORE_DATETIME_H
+#define SNAKE_CORE_DATETIME_H
 
 #include <chrono>
 #include <string>
