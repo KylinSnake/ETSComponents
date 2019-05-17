@@ -123,6 +123,11 @@ TEST_CASE("test_string", "[String][Util]")
 	std::string cB="123abcd \t";
 	REQUIRE(to_upper(c) == cA);
 	REQUIRE(to_lower(c) == cB);
+
+	std::string d="TEsT.aNd.cHeCK";
+	auto e=to_camel(d, '.');
+	REQUIRE(e == "TestAndCheck");
+	REQUIRE(camel_to_lower_case(e) == "test_and_check");
 }
 
 TEST_CASE("test_config", "[Config][YAML][Util]")

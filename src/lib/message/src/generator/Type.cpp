@@ -188,6 +188,10 @@ namespace snake
 					cpp.print_line(ret_bool + " = " + ret_bool + " && protobuf_to_" + cpp_type_ + "(" + proto_var + "." + name_ + "(i), t);");
 					cpp.print_line(local_var + "." + name_ + ".push_back(t);");
 				}
+				else if(dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_ENUM)
+				{
+					cpp.print_line(local_var + "." + name_ + ".push_back(static_cast<" + cpp_type_ + ">(int(" + proto_var + "." + name_ + "(i))));");
+				}
 				else
 				{
 					cpp.print_line(local_var + "." + name_ + ".push_back(" + proto_var + "." + name_ + "(i));");
@@ -205,6 +209,10 @@ namespace snake
 				else if(dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_MESSAGE)
 				{
 					cpp.print_line(ret_bool + " = " + ret_bool + " && protobuf_to_" + cpp_type_ + "(" + proto_var + "." + name_ + "(), " + local_var + "." + name_ + ");");
+				}
+				else if(dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_ENUM)
+				{
+					cpp.print_line(local_var + "." + name_ + " = static_cast<" + cpp_type_ + ">(int(" + proto_var + "." + name_ + "()));");
 				}
 				else
 				{
@@ -238,6 +246,10 @@ namespace snake
 				{
 					cpp.print_line(ret_bool + " = " + ret_bool + " && " + cpp_type_ + "_to_protobuf(p, *" + proto_var + ".add_" + name_ +"());");
 				}
+				else if (dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_ENUM)
+				{
+					cpp.print_line(proto_var + ".add_" + name_ + "(static_cast<decltype(" + proto_var + "." + name_ + "(0))>(int(p)));");
+				}
 				else
 				{
 					cpp.print_line(proto_var + ".add_" + name_ + "(p);");
@@ -256,6 +268,10 @@ namespace snake
 				else if(dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_MESSAGE)
 				{
 					cpp.print_line(ret_bool + " = " + ret_bool + " && " + cpp_type_ + "_to_protobuf(" + local_var + "." + name_ + ", *" + proto_var + ".mutable_" + name_ +"());");
+				}
+				else if (dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_ENUM)
+				{
+					cpp.print_line(proto_var + ".set_" + name_ + "(static_cast<decltype(" + proto_var + "." + name_ + "())>(int(" + local_var + "." + name_ + ")));");
 				}
 				else
 				{
@@ -289,6 +305,10 @@ namespace snake
 				hpp.add_type(This());
 				cpp.add_type(This());
 				cpp.add_header(name_ + ".h");
+				if (base_type_.empty())
+				{
+					hpp.add_header("MessageType.h");
+				}
 				cpp.add_global_function_decl("bool " + name_ + "_to_protobuf(const " + name_ + "&," + full_proto_ns() + "::" + name_ + "&);");
 				cpp.add_global_function_decl("bool protobuf_to_" + name_ + "(const " + full_proto_ns() + "::" + name_ + "&, " + name_ + "&);");
 				cpp.add_header(proto_source_name_ + ".pb.h");
@@ -318,6 +338,17 @@ namespace snake
 				for(auto& p : fields_)
 				{
 					p.second->output_declaration(hpp);
+				}
+
+				// output functions
+
+				if(base_type_.empty())
+				{
+					hpp.print_line("virtual MessageType type() const;");
+				}
+				else
+				{
+					hpp.print_line("virtual MessageType type() const override;");
 				}
 				hpp.decrement_tab();
 				hpp.print_line("};");
@@ -367,6 +398,19 @@ namespace snake
 				cpp.decrement_tab();
 				cpp.print_line("}");
 				cpp.print_line();
+
+				// following are class member functions
+
+				// virtual MessageType type() const
+				cpp.print_line("MessageType " + name_ + "::type() const");
+				cpp.print_line("{");
+				cpp.increment_tab();
+				cpp.print_line("return MessageType::" + (base_type_.empty() ? "UNKNOWN" : snake::core::to_upper(snake::core::camel_to_lower_case(name_))) + ";");
+				cpp.decrement_tab();
+				cpp.print_line("}");
+				cpp.print_line();
+
+
 			}
 		}
 	}

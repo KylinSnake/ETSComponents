@@ -13,7 +13,10 @@ target_include_directories(message_generator
 )
 target_link_libraries(message_generator core tp::protobuf ${PROTOBUF_LIBRARY_DIRS}/libprotoc.so)
 
-set(SRC base
+set(SRC 
+	base 
+	message_type
+	message_factory
 )
 
 

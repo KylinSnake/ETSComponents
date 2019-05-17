@@ -1,32 +1,15 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
+import "message_type.proto";
 
 package snake.message.proto;
-
-enum MessageType
-{
-	UNKNOWN = 0;
-	MESSAGE_VERSION = 1;
-	CONTROL_MESSAGE = 2;
-	DATA_MESSAGE = 3;
-}
-
-message MessageFactory
-{
-	TestMessage TestMessage = 1;
-	MessageVersion MessageVersion = 2;
-	ControlMessage ControlMessage = 3;
-	DataMessage DataMessage = 4;
-	RequestMessage RequestMessage = 5;
-	ResponseMessage ResponseMessage = 6;
-}
 
 message MessageBase
 {
 	int32 major_version = 1;
 	int32 minor_version = 2;
-	google.protobuf.Timestamp created_time = 3;
+	google.protobuf.Timestamp created_time = 4;
 }
 
 message TestMessage
@@ -34,9 +17,10 @@ message TestMessage
 	MessageBase base = 1;
 	repeated MessageBase group = 2;
 	MessageBase msg  = 3;
-	repeated string strings = 4;
-	repeated int32 integers = 5;
-	repeated google.protobuf.Timestamp stamps = 6;
+	repeated MessageType types = 4;
+	repeated string strings = 5;
+	repeated int32 integers = 6;
+	repeated google.protobuf.Timestamp stamps = 7;
 }
 
 message MessageVersion

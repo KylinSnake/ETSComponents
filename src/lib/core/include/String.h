@@ -86,6 +86,47 @@ namespace snake
 				[](unsigned char c){ return std::tolower(c); } );
 			return str;
 		}
+
+		inline std::string to_camel(const std::string source, const char delim='_')
+		{
+			char buf[source.size()+1] {'\0'};
+			size_t j = 0;
+			for(size_t i = 0; i < source.size(); ++i)
+			{
+				if(source[i] != delim)
+				{
+					if(i == 0 || source[i-1] == delim)
+					{
+						buf[j++] = std::toupper(source[i]);
+					}
+					else
+					{
+						buf[j++] = std::tolower(source[i]);
+					}
+				}
+			}
+			return std::string(buf);
+		}
+
+		inline std::string camel_to_lower_case(const std::string& source, const char delim='_')
+		{
+			char buf[source.size() * 2] {'\0'};
+			size_t j = 0;
+			for(size_t i = 0; i < source.size(); ++i)
+			{
+				if(i > 0 && std::isupper(source[i]))
+				{
+					if( std::islower(source[i-1]) 
+						|| (i < source.size() - 1 && std::islower(source[i+1]))
+						)
+					{
+						buf[j++] = delim;
+					}
+				}
+				buf[j++] = source[i];
+			}
+			return to_lower(buf);
+		}
 	}
 }
 

@@ -318,6 +318,11 @@ namespace snake
 				return msg_t;
 			}
 
+			OutputCpp& get_cpp_singleton()
+			{
+				static OutputCpp t;
+				return t;
+			}
 
 			bool MessageGenerator::Generate(const FileDescriptor * file, const string & parameter, 
 					GeneratorContext * generator_context, string * error) const 
@@ -325,8 +330,7 @@ namespace snake
 				std::vector<std::string> parent;
 				std::vector<std::shared_ptr<OutputHpp>> hpps;
 				
-				auto cpp = std::make_shared<OutputCpp>();
-				cpp->set_file_name("generated.cpp");
+				auto cpp = get_cpp_singleton();
 
 				// extract enum type
 				int enum_count = file->enum_type_count();
@@ -335,7 +339,7 @@ namespace snake
 					auto dsp = file->enum_type(i);
 					auto hpp = std::make_shared<OutputHpp>();
 					auto enm = EnumType::create();
-					if(enm->parse(dsp, parent, *hpp, *cpp))
+					if(enm->parse(dsp, parent, *hpp, cpp))
 					{
 						hpp->set_file_name(enm->name() + ".h");
 						hpp->set_path("include");
@@ -354,7 +358,7 @@ namespace snake
 					}
 					auto hpp = std::make_shared<OutputHpp>();
 					auto cls = ClassType::create();
-					if(cls->parse(dsp, parent, *hpp, *cpp))
+					if(cls->parse(dsp, parent, *hpp, cpp))
 					{
 						hpp->set_file_name(cls->name() + ".h");
 						hpp->set_path("include");
@@ -366,52 +370,20 @@ namespace snake
 					}
 				}
 
+				++current_file_number;
 
 				// output generated files
-				cpp->output(generator_context);
+				if (current_file_number == proto_file_number)
+				{
+					cpp.set_file_name("generated.cpp");
+					cpp.output(generator_context);
+				}
 				for(auto& i : hpps)
 				{
 					i->output(generator_context);
 				}
 
 				return Base::Generate(file, parameter, generator_context, error);
-/*
-				// extract message_type
-				int message_type_count = file->message_type_count();
-				std::vector<message_type> messages;
-				std::vector<std::set<std::string>> headers;
-				headers.resize(message_type_count);
-				for(int i = 0; i < message_type_count; ++i)
-				{
-					auto dsp = file->message_type(i);
-					auto msg = extract_message_type(dsp, file->name(), file->package(), headers[i]);
-					messages.push_back(msg);
-				}
-
-				// extract enum type
-				std::vector<enum_type> enums;
-				int enum_count = file->enum_type_count();
-				for(int i = 0 ; i < enum_count; ++i)
-				{
-					auto dsp = file->enum_type(i);
-					auto enm = extract_enum_type(dsp, file->name(), file->package(), empty_parent);
-					enums.push_back(enm);
-				}
-				// Test code
-				for(int i = 0; i < message_type_count; ++i)
-				{
-					std::ofstream f("/tmp/test/" + messages[i].name +".h");
-					f<<messages[i].to_header(headers[i]);
-				}
-
-				for(int i = 0; i < enum_count; ++i)
-				{
-					std::ofstream f("/tmp/test/" + enums[i].name + ".h");
-					f<<enums[i].to_header();
-					std::ofstream f2("/tmp/test/" + enums[i].name + ".cpp");
-					f2<<enums[i].to_cpp();
-				}
-*/
 			}
 		}
 	}
