@@ -45,6 +45,7 @@ namespace snake
 				static std::string tabs(size_t i);
 			
 				void add_global_function_decl(const std::string& s);
+
 			protected:
 				void output_header_comment();
 				void output_headers();
@@ -66,6 +67,10 @@ namespace snake
 				std::set<std::string> global_functions_ {};
 
 				io::ZeroCopyOutputStream * stream_ {nullptr};
+
+			public:
+				const std::set<std::string>& get_headers() const { return headers_;}
+				const std::map<std::string, std::shared_ptr<Type>> get_types() const { return type_ptrs_;}
 			};
 
 			class OutputHpp : public OutputFile

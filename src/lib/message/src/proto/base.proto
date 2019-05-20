@@ -12,22 +12,22 @@ message MessageBase
 	google.protobuf.Timestamp created_time = 4;
 }
 
-message TestMessage
-{
-	MessageBase base = 1;
-	repeated MessageBase group = 2;
-	MessageBase msg  = 3;
-	repeated MessageType types = 4;
-	repeated string strings = 5;
-	repeated int32 integers = 6;
-	repeated google.protobuf.Timestamp stamps = 7;
-}
-
 message MessageVersion
 {
 	MessageBase base = 1;
 	int32 min_major_version = 2;
 	int32 min_minor_version = 3;
+}
+
+message TestMessage
+{
+	MessageBase base = 1;
+	repeated MessageVersion group = 2;
+	MessageVersion msg  = 3;
+	repeated MessageType types = 4;
+	repeated string strings = 5;
+	repeated int32 integers = 6;
+	repeated google.protobuf.Timestamp stamps = 7;
 }
 
 message ControlMessage

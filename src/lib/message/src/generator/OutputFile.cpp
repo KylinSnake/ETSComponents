@@ -209,6 +209,7 @@ namespace snake { namespace message {
 			print_line();
 			for(auto& s : type_ptrs_)
 			{
+				print_line("// Output Type: " + s.first);
 				s.second->output(*this);
 			}
 		}

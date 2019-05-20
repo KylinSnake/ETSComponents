@@ -8,7 +8,7 @@ message MessageFactory
 {
 	message Item
 	{
-		oneof item
+		oneof tag
 		{
 			TestMessage TestMessage = 1;
 			MessageVersion MessageVersion = 2;
@@ -18,5 +18,6 @@ message MessageFactory
 			ResponseMessage ResponseMessage = 6;
 		}
 	}
-	repeated Item items = 1;
+
+	repeated Item item = 1;
 }

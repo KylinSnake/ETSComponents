@@ -91,7 +91,6 @@ namespace snake
 			private:
 				void output_serialize_item(OutputCpp& cpp, const std::string& local_var, const std::string& proto_var, const std::string& ret_bool);
 				void output_serialize_list(OutputCpp& cpp, const std::string& local_var, const std::string& proto_var, const std::string& ret_bool);
-				
 				void output_deserialize_item(OutputCpp& cpp, const std::string& proto_var, const std::string& local_var, const std::string& ret_bool);
 				void output_deserialize_list(OutputCpp& cpp, const std::string& proto_var, const std::string& local_var, const std::string& ret_bool);
 				
@@ -115,6 +114,21 @@ namespace snake
 			protected:
 				std::map<int, FieldType::Ptr> fields_;
 				std::string base_type_{};
+			};
+
+			class FactoryType : public TypeT<FactoryType>
+			{
+			public:
+				FactoryType() = default;
+				virtual ~FactoryType() = default;
+
+				virtual void output(OutputHpp& hpp) override;
+				virtual void output(OutputCpp& cpp) override;
+
+				bool parse(const Descriptor* dsp, std::vector<std::string>& parent_chain, OutputHpp& hpp, OutputCpp& cpp);
+			protected:
+				std::map<std::string, std::string> fields_;
+				std::map<int, std::string> types_;
 			};
 		}
 	}

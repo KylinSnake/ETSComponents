@@ -46,9 +46,6 @@ namespace snake
 					auto v = dsp->value(i);
 					fields_[v->number()] = v->name();
 				}
-				auto fn = full_name();
-				hpp.add_global_function_decl("std::string enum_to_string(" + fn +" e);");
-				hpp.add_global_function_decl("bool parse_enum(const std::string&, " + fn +"& e);");
 
 				hpp.add_type(This());
 				cpp.add_type(This());
@@ -69,6 +66,9 @@ namespace snake
 				}
 				hpp.decrement_tab();
 				hpp.print_line("};");
+				auto fn = full_name();
+				hpp.print_line("std::string enum_to_string(" + fn +" e);");
+				hpp.print_line("bool parse_enum(const std::string&, " + fn +"& e);");
 			}
 
 			void EnumType::output(OutputCpp& cpp)
@@ -345,10 +345,14 @@ namespace snake
 				if(base_type_.empty())
 				{
 					hpp.print_line("virtual MessageType type() const;");
+					hpp.print_line("virtual bool serialize(std::string&) const = 0;");
+					hpp.print_line("virtual bool deserialize(const std::string&) = 0;");
 				}
 				else
 				{
 					hpp.print_line("virtual MessageType type() const override;");
+					hpp.print_line("virtual bool serialize(std::string&) const override;");
+					hpp.print_line("virtual bool deserialize(const std::string&) override;");
 				}
 				hpp.decrement_tab();
 				hpp.print_line("};");
@@ -356,6 +360,7 @@ namespace snake
 
 			void ClassType::output(OutputCpp& cpp)
 			{
+				auto lower_name = snake::core::to_lower(name_);
 				// bool protobuf_to_class()
 				cpp.print_line("bool protobuf_to_" + name_ + "(const " + full_proto_ns() + "::" + name_ + "& proto_var, " + name_ + "& local_var)");
 				cpp.print_line("{");
@@ -410,6 +415,184 @@ namespace snake
 				cpp.print_line("}");
 				cpp.print_line();
 
+				if(!base_type_.empty())
+				{
+					// virtual bool serialize(std::string&) const override
+					cpp.print_line("bool " + name_ + "::serialize(std::string& out) const");
+					cpp.print_line("{");
+					cpp.increment_tab();
+					cpp.print_line("proto::MessageFactory f{};");
+					cpp.print_line("auto p = f.add_item()->mutable_" + lower_name + "();");
+					cpp.print_line("auto ret = " + name_ + "_to_protobuf(*this, *p);");
+					cpp.print_line("return ret && f.SerializeToString(&out);");
+					cpp.decrement_tab();
+					cpp.print_line("}");
+					cpp.print_line();
+
+					// virtual bool deserialize(const std::string&) override
+					cpp.print_line("bool " + name_ + "::deserialize(const std::string& out)");
+					cpp.print_line("{");
+					cpp.increment_tab();
+					cpp.print_line("proto::MessageFactory f{};");
+					cpp.print_line("auto ret = f.ParseFromString(out);");
+					cpp.print_line("if(ret && f.item_size() == 1 && f.item(0).has_" + lower_name + "())");
+					cpp.print_line("{");
+					cpp.increment_tab();
+					cpp.print_line("return protobuf_to_" + name_ + "(f.item(0)." + lower_name + "(), *this);");
+					cpp.decrement_tab();
+					cpp.print_line("}");
+					cpp.print_line("return false;");
+					cpp.decrement_tab();
+					cpp.print_line("}");
+					cpp.print_line();
+				}
+
+			}
+
+			// FactoryType
+
+			bool FactoryType::parse(const Descriptor* dsp, std::vector<std::string>& parents, OutputHpp& hpp, OutputCpp& cpp)
+			{
+				parse_type(dsp->name(), dsp->file(), parents);
+
+				auto nest_dsp = dsp->FindNestedTypeByName("Item");
+
+				if (nest_dsp == nullptr)
+				{
+					return false;
+				}
+
+				auto oneof_dsp = nest_dsp->FindOneofByName("tag");
+
+				if (oneof_dsp == nullptr)
+				{
+					return false;
+				}
+
+				auto size = oneof_dsp->field_count();
+				for(int i = 0; i < size; ++i)
+				{
+					auto d = oneof_dsp->field(i);
+					auto name = d->name();
+					auto type = d->message_type()->name();
+					auto index = d->number();
+					fields_[name] = type;
+					types_[index] = type;
+				}
+
+				hpp.add_header("memory");
+				hpp.add_header("functional");
+				hpp.add_header("string");
+				cpp.add_header(proto_source_name_ + ".pb.h");
+				cpp.add_header(name_ + ".h");
+
+				hpp.add_type(This());
+				cpp.add_type(This());
+
+				cpp.add_global_function_decl("bool handle_message_from_item(const ::snake::message::proto::MessageFactory::Item&, const std::function<void(const MessageBase*)>&);");
+
+				return true;
+			}
+
+			void FactoryType::output(OutputHpp& hpp)
+			{
+				hpp.print_line("class MessageBase;");
+				hpp.print_line("bool serialize_to_string(const std::function<const MessageBase*()>& next, std::string& ret);");
+				hpp.print_line();
+
+				hpp.print_line("template<typename iteratorT>");
+				hpp.print_line("inline bool serialize_to_string(iteratorT begin, iteratorT end, std::string& ret)");
+
+				hpp.print_line("{");
+				hpp.increment_tab();
+				hpp.print_line("return serialize_to_string([&begin, &end](){ return begin == end ? nullptr : &(*begin++);}, ret);");
+				hpp.decrement_tab();
+				hpp.print_line("}");
+				hpp.print_line();
+
+				hpp.print_line("size_t parse_from_string(const std::string& str, const std::function<void(const MessageBase*)>& handler);");
+			}
+
+			void FactoryType::output(OutputCpp& cpp)
+			{
+				cpp.print_line("bool handle_message_from_item(const ::snake::message::proto::MessageFactory::Item& item, const std::function<void(const MessageBase*)>& func)");
+				cpp.print_line("{");
+				cpp.increment_tab();
+				for (auto& p : fields_)
+				{
+					auto name = snake::core::to_lower(p.first);
+					auto type = p.second;
+
+					cpp.print_line("if (item.has_"+name+"())");
+					cpp.print_line("{");
+					cpp.increment_tab();
+					cpp.print_line(type + " t{};");
+					cpp.print_line("if(protobuf_to_"+ type +"(item."+name+"(), t))");
+					cpp.print_line("{");
+					cpp.increment_tab();
+					cpp.print_line("func(&t);");
+					cpp.print_line("return true;");
+					cpp.decrement_tab();
+					cpp.print_line("}");
+					cpp.print_line("else return false;");
+					cpp.decrement_tab();
+					cpp.print_line("}");
+				}
+				cpp.print_line("return false;");
+				cpp.decrement_tab();
+				cpp.print_line("}");
+				cpp.print_line();
+				
+				cpp.print_line("size_t parse_from_string(const std::string& str, const std::function<void(const MessageBase*)>& handler)");
+				cpp.print_line("{");
+				cpp.increment_tab();
+				cpp.print_line("size_t ret {0};");
+				cpp.print_line("proto::MessageFactory f;");
+				cpp.print_line("if(f.ParseFromString(str))");
+				cpp.print_line("{");
+				cpp.increment_tab();
+				cpp.print_line("for(int i = 0; i < f.item_size(); ++i)");
+				cpp.print_line("{");
+				cpp.increment_tab();
+				cpp.print_line("ret += handle_message_from_item(f.item(i), handler) ? 1 : 0;");
+				cpp.decrement_tab();
+				cpp.print_line("}");
+				cpp.decrement_tab();
+				cpp.print_line("}");
+				cpp.print_line("return ret;");
+				cpp.decrement_tab();
+				cpp.print_line("}");
+				cpp.print_line();
+
+				cpp.print_line("bool serialize_to_string(const std::function<const MessageBase*()>& next, std::string& ret)");
+				cpp.print_line("{");
+				cpp.increment_tab();
+				cpp.print_line("proto::MessageFactory f;");
+				cpp.print_line("for(auto ptr = next(); ptr!= nullptr; ptr = next())");
+				cpp.print_line("{");
+				cpp.increment_tab();
+				cpp.print_line("auto type = ptr->type();");
+				for(auto& p : fields_)
+				{
+					cpp.print_line("if (type == MessageType::" + snake::core::to_upper(snake::core::camel_to_lower_case(p.second)) + ")");
+					cpp.print_line("{");
+					cpp.increment_tab();
+					cpp.print_line("auto msg = dynamic_cast<const " + p.second + "*>(ptr);");
+					cpp.print_line("assert(msg != nullptr);");
+					cpp.print_line("proto::" + p.second + " t{};");
+					cpp.print_line("if(!" + p.second + "_to_protobuf(*msg, t)) return false;");
+					cpp.print_line("*(f.add_item()->mutable_" + snake::core::to_lower(p.first) + "()) = t;");
+					cpp.print_line("continue;");
+					cpp.decrement_tab();
+					cpp.print_line("}");
+				}
+				cpp.print_line("return false;");
+				cpp.decrement_tab();
+				cpp.print_line("}");
+				cpp.print_line("return f.SerializeToString(&ret);");
+				cpp.decrement_tab();
+				cpp.print_line("}");
+				cpp.print_line();
 
 			}
 		}
