@@ -37,7 +37,6 @@ add_compile_definitions(
 	MESSAGE_MINIMAL_MINOR_VERSION=1
 )
 	
-
 add_library(message ${CDIR}/generated.cpp ${CSRC})
 target_include_directories(message
 	PUBLIC
