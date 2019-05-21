@@ -9,14 +9,14 @@ message MessageBase
 {
 	int32 major_version = 1;
 	int32 minor_version = 2;
-	google.protobuf.Timestamp created_time = 4;
+	google.protobuf.Timestamp last_update = 3;
 }
 
 message MessageVersion
 {
 	MessageBase base = 1;
-	int32 min_major_version = 2;
-	int32 min_minor_version = 3;
+	int32 minimal_major_version = 2;
+	int32 minimal_minor_version = 3;
 }
 
 message TestMessage
@@ -28,6 +28,8 @@ message TestMessage
 	repeated string strings = 5;
 	repeated int32 integers = 6;
 	repeated google.protobuf.Timestamp stamps = 7;
+	map<string, MessageVersion> version_map = 8;
+	map<int32, google.protobuf.Timestamp> time_map = 9;
 }
 
 message ControlMessage

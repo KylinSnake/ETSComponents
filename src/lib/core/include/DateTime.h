@@ -1,6 +1,8 @@
 #ifndef SNAKE_CORE_DATETIME_H
 #define SNAKE_CORE_DATETIME_H
 
+#include <time.h>
+
 #include <chrono>
 #include <string>
 
@@ -25,6 +27,9 @@ namespace snake
 
 			DateTime(const TimePoint& t) : tp_(t) {}
 			DateTime(TimePoint&& t) : tp_(t) {}
+
+			DateTime(std::int64_t nano) : tp_(nanoseconds(nano)) {}
+
 			DateTime& operator=(const TimePoint& t) { tp_ = t; return *this;}
 			DateTime& operator=(TimePoint&& t) { tp_ = t; return *this;}
 
@@ -40,11 +45,16 @@ namespace snake
 
 			explicit operator TimePoint() const { return tp_;}
 
+			explicit operator int64_t() const { return tp_.time_since_epoch().count(); }
+
 			DateTime& operator +=(const Duration& t) { tp_ += t; return *this;}
 			DateTime& operator -=(const Duration& t) { tp_ -= t; return *this;}
 
 			DateTime operator +(const Duration& t) const { return DateTime(tp_ + t);}
 			DateTime operator -(const Duration& t) const { return DateTime(tp_ - t);}
+			
+			Duration operator -(const DateTime& t) const { return tp_ - t.tp_;}
+
 
 			//Following are calendar accessor
 			std::int32_t year() const; // 1900-20XX
@@ -73,8 +83,11 @@ namespace snake
 
 			static size_t format(char*, size_t, const char* fmt, const DateTime& d, uint32_t digit_lt_one_sec = 0);
 			static std::string format(const std::string& fmt, const DateTime& d, uint32_t digit_lt_one_sec = 0);
+			static std::string format_from_default(const DateTime& d);
 
 			std::string format(const std::string& fmt, uint32_t digit_lt_one_sec) const;
+			std::string format_from_default() const;
+			std::string format_fully() const;
 		private:
 			TimePoint tp_ {null().tp_};
 		};
@@ -112,6 +125,13 @@ namespace snake
 		inline Duration Nanoseconds(int i)
 		{
 			return duration_cast<Duration>(nanoseconds(i));
+		}
+
+		template<typename OStreamT>
+		OStreamT& operator<<(OStreamT& os, const DateTime& d)
+		{
+			os << d.format_from_default();
+			return os;
 		}
 	}
 }

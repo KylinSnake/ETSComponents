@@ -1,3 +1,4 @@
+
 #include <Type.hpp>
 #include <String.h>
 
@@ -109,7 +110,18 @@ namespace snake
 				p->cpp_type_ = dsp->cpp_type_name();
 				p->dsp_cpp_type_enum_ = dsp->cpp_type();
 
-				if (p->dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_ENUM)
+				if(dsp->is_map())
+				{
+					p->is_map_ = true;
+					hpp.add_header("map");
+					cpp.add_header("google/protobuf/map.h");
+					auto kv_dsp = dsp->message_type();
+					auto k_dsp = kv_dsp->FindFieldByName("key");
+					auto v_dsp = kv_dsp->FindFieldByName("value");
+					p->key_field_ = create(k_dsp, hpp, cpp);
+					p->value_field_ = create(v_dsp, hpp, cpp);
+				}
+				else if (p->dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_ENUM)
 				{
 					hpp.add_header(dsp->enum_type()->name() + ".h");
 					p->cpp_type_ = dsp->enum_type()->name();
@@ -141,7 +153,7 @@ namespace snake
 					p->cpp_type_ = "std::string";
 				}
 
-				if (dsp->is_repeated())
+				if (dsp->is_repeated() && !p->is_map_)
 				{
 					p->is_list_ = true;
 					hpp.add_header("vector");
@@ -155,6 +167,10 @@ namespace snake
 				{
 					hpp.print_line("std::vector<" + cpp_type_ + "> " + name_ + "{};");
 				}
+				else if (is_map_)
+				{
+					hpp.print_line("std::map<" + key_field_->cpp_type_ + ", " + value_field_->cpp_type_ + "> " + name_ + "{};");
+				}
 				else
 				{
 					hpp.print_line(cpp_type_ + " " + name_ + "{};");
@@ -166,6 +182,10 @@ namespace snake
 				if(is_list_)
 				{
 					output_deserialize_list(cpp, proto_var, local_var, ret_bool);
+				}
+				else if(is_map_)
+				{
+					output_deserialize_map(cpp, proto_var, local_var, ret_bool);
 				}
 				else
 				{
@@ -180,7 +200,7 @@ namespace snake
 				cpp.increment_tab();
 				if(cpp_type_ == "snake::core::DateTime")
 				{
-					cpp.print_line(local_var + "." + name_ + ".push_back(Clock::from_time_t(google::protobuf::util::TimeUtil::TimestampToTimeT(" + proto_var + "." + name_ + "(i))));");
+					cpp.print_line(local_var + "." + name_ + ".push_back(google::protobuf::util::TimeUtil::TimestampToNanoseconds(" + proto_var + "." + name_ + "(i)));");
 				}
 				else if(dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_MESSAGE)
 				{
@@ -200,11 +220,45 @@ namespace snake
 				cpp.print_line("}");
 			}
 
+			void FieldType::output_deserialize_map(OutputCpp& cpp, const std::string& proto_var, const std::string& local_var, const std::string& ret_bool)
+			{
+				auto e= [](OutputCpp& cpp, const std::string& proto, const std::string& local, const std::string& cpp_type, FieldDescriptor::CppType type_enum, const std::string& ret_bool)
+				{
+					if(cpp_type == "snake::core::DateTime")
+					{
+						cpp.print_line(local + " = google::protobuf::util::TimeUtil::TimestampToNanoseconds(" + proto + ");");
+					}
+					else if(type_enum == FieldDescriptor::CppType::CPPTYPE_MESSAGE)
+					{
+						cpp.print_line(ret_bool + " = " + ret_bool + " && protobuf_to_" + cpp_type + "(" + proto + "," + local + ");");
+					}
+					else if (type_enum == FieldDescriptor::CppType::CPPTYPE_ENUM)
+					{
+						cpp.print_line(local + " = static_cast<" + cpp_type + ">(int(" + proto + "));");
+					}
+					else
+					{
+						cpp.print_line(local + " = " + proto + ";");
+					}
+				};
+
+				cpp.print_line("for(auto& p : " + proto_var + "." + name_ + "())");
+				cpp.print_line("{");
+				cpp.increment_tab();
+				cpp.print_line(key_field_->cpp_type_ + " key{};");
+				e(cpp, "p.first", "key", key_field_->cpp_type_, key_field_->dsp_cpp_type_enum_, ret_bool);
+				cpp.print_line(value_field_->cpp_type_ + " value{};");
+				e(cpp, "p.second", "value", value_field_->cpp_type_, value_field_->dsp_cpp_type_enum_, ret_bool);
+				cpp.print_line(local_var + "." + name_ + "[key] = value;");
+				cpp.decrement_tab();
+				cpp.print_line("}");
+			}
+
 			void FieldType::output_deserialize_item(OutputCpp& cpp, const std::string& proto_var, const std::string& local_var, const std::string& ret_bool)
 			{
 				if(cpp_type_ == "snake::core::DateTime")
 				{
-					cpp.print_line(local_var + "." + name_ + " = Clock::from_time_t(google::protobuf::util::TimeUtil::TimestampToTimeT(" + proto_var + "." + name_ + "()));");
+					cpp.print_line(local_var + "." + name_ + " = google::protobuf::util::TimeUtil::TimestampToNanoseconds(" + proto_var + "." + name_ + "());");
 				}
 				else if(dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_MESSAGE)
 				{
@@ -226,6 +280,10 @@ namespace snake
 				{
 					output_serialize_list(cpp, local_var, proto_var, ret_bool);
 				}
+				else if(is_map_)
+				{
+					output_serialize_map(cpp, local_var, proto_var, ret_bool);
+				}
 				else
 				{
 					output_serialize_item(cpp, local_var, proto_var, ret_bool);
@@ -240,7 +298,7 @@ namespace snake
 
 				if(cpp_type_ == "snake::core::DateTime")
 				{
-					cpp.print_line("*" + proto_var + ".add_" + name_ + "() = google::protobuf::util::TimeUtil::TimeTToTimestamp(Clock::to_time_t(TimePoint(p)));");
+					cpp.print_line("*" + proto_var + ".add_" + name_ + "() = google::protobuf::util::TimeUtil::NanosecondsToTimestamp(std::int64_t(p));");
 				}
 				else if (dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_MESSAGE)
 				{
@@ -259,11 +317,46 @@ namespace snake
 				cpp.print_line("}");
 			}
 
+			void FieldType::output_serialize_map(OutputCpp& cpp, const std::string& local_var, const std::string& proto_var, const std::string& ret_bool)
+			{
+				auto e= [](OutputCpp& cpp, const std::string& local, const std::string& proto, const std::string& cpp_type, FieldDescriptor::CppType type_enum, const std::string& ret_bool)
+				{
+					if(cpp_type == "snake::core::DateTime")
+					{
+						cpp.print_line(proto + " = google::protobuf::util::TimeUtil::NanosecondsToTimestamp(std::int64_t (" + local + "));");
+					}
+					else if(type_enum == FieldDescriptor::CppType::CPPTYPE_MESSAGE)
+					{
+						cpp.print_line(ret_bool + " = " + ret_bool + " && " + cpp_type + "_to_protobuf(" + local + "," + proto + ");");
+					}
+					else if (type_enum == FieldDescriptor::CppType::CPPTYPE_ENUM)
+					{
+						cpp.print_line(proto + " = static_cast<decltype(" + proto + ")>(int(" + local + "));");
+					}
+					else
+					{
+						cpp.print_line(proto + " = " + local + ";");
+					}
+				};
+
+				cpp.print_line("for(auto& p : " +local_var + "." + name_ + ")");
+				cpp.print_line("{");
+				cpp.increment_tab();
+				cpp.print_line("using ProtoMap= std::decay<decltype( " + proto_var + "." + name_ + "())>::type;");
+				cpp.print_line("ProtoMap::key_type key{};");
+				e(cpp, "p.first", "key", key_field_->cpp_type_, key_field_->dsp_cpp_type_enum_, ret_bool);
+				cpp.print_line("ProtoMap::mapped_type value{};");
+				e(cpp, "p.second", "value", value_field_->cpp_type_, value_field_->dsp_cpp_type_enum_, ret_bool);
+				cpp.print_line("(*" + proto_var + ".mutable_" + name_ + "())[key] = value;");
+				cpp.decrement_tab();
+				cpp.print_line("}");
+			}
+
 			void FieldType::output_serialize_item(OutputCpp& cpp, const std::string& local_var, const std::string& proto_var, const std::string& ret_bool)
 			{
 				if(cpp_type_ == "snake::core::DateTime")
 				{
-					cpp.print_line("*" + proto_var + ".mutable_" + name_ + "() = google::protobuf::util::TimeUtil::TimeTToTimestamp(Clock::to_time_t(TimePoint(" + local_var + "." + name_ + ")));");
+					cpp.print_line("*" + proto_var + ".mutable_" + name_ + "() = google::protobuf::util::TimeUtil::NanosecondsToTimestamp(std::int64_t(" + local_var + "." + name_ + "));");
 				}
 				else if(dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_MESSAGE)
 				{
@@ -330,8 +423,23 @@ namespace snake
 				hpp.increment_tab();
 
 				// output default ctor and destructor
-				hpp.print_line(name_ + "() = default;");
-				hpp.print_line("~" + name_ + "() = default;");
+
+				if(base_type_.empty())
+				{
+					hpp.print_line(name_ + "(): major_version{MESSAGE_MAJOR_VERSION}, minor_version{MESSAGE_MINOR_VERSION}");
+					hpp.print_line("{ last_update = snake::core::DateTime::now(); }");
+					hpp.print_line("~" + name_ + "() = default;");
+				}
+				else if(name_ == "MessageVersion")
+				{
+					hpp.print_line("MessageVersion() : " + base_type_ + "(), minimal_major_version(MESSAGE_MINIMAL_MAJOR_VERSION), minimal_minor_version(MESSAGE_MINIMAL_MINOR_VERSION) {}");
+					hpp.print_line("virtual ~MessageVersion() = default;");
+				}
+				else
+				{
+					hpp.print_line(name_ + "() = default;");
+					hpp.print_line("virtual ~" + name_ + "() = default;");
+				}
 				hpp.print_line();
 				
 				// output member
@@ -347,6 +455,7 @@ namespace snake
 					hpp.print_line("virtual MessageType type() const;");
 					hpp.print_line("virtual bool serialize(std::string&) const = 0;");
 					hpp.print_line("virtual bool deserialize(const std::string&) = 0;");
+					hpp.print_line("void set_last_update() { last_update = snake::core::DateTime::now(); }");
 				}
 				else
 				{
@@ -354,6 +463,7 @@ namespace snake
 					hpp.print_line("virtual bool serialize(std::string&) const override;");
 					hpp.print_line("virtual bool deserialize(const std::string&) override;");
 				}
+				hpp.print_line("bool operator==(const " + name_ + "&) const;");
 				hpp.decrement_tab();
 				hpp.print_line("};");
 			}
@@ -411,6 +521,30 @@ namespace snake
 				cpp.print_line("{");
 				cpp.increment_tab();
 				cpp.print_line("return MessageType::" + (base_type_.empty() ? "UNKNOWN" : snake::core::to_upper(snake::core::camel_to_lower_case(name_))) + ";");
+				cpp.decrement_tab();
+				cpp.print_line("}");
+				cpp.print_line();
+
+				// bool operator==(const MsgType&) const
+
+				cpp.print_line("bool " + name_ + "::operator==(const " + name_ + "& rhs) const");
+				cpp.print_line("{");
+				cpp.increment_tab();
+				std::string line{};
+				for(auto& p : fields_)
+				{
+					auto name = p.second->name();
+					line += " && (" + name + " == rhs." + name + ")";
+				}
+				if (base_type_.empty())
+				{
+					line = "true " + line;
+				}
+				else
+				{
+					line = base_type_ + "::operator==(rhs)" + line;
+				}
+				cpp.print_line(" return " + line + ";");
 				cpp.decrement_tab();
 				cpp.print_line("}");
 				cpp.print_line();

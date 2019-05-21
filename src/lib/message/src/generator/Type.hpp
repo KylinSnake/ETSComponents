@@ -83,6 +83,9 @@ namespace snake
 
 				using Ptr = std::shared_ptr<FieldType>;
 
+				const std::string& name() const { return name_; }
+				const std::string& cpp_type() const { return cpp_type_; }
+
 				void output_declaration(OutputHpp& hpp);
 				void output_serialize(OutputCpp& cpp, const std::string& local_var, const std::string& proto_var, const std::string& ret_bool);
 				void output_deserialize(OutputCpp& cpp, const std::string& proto_var, const std::string& local_var, const std::string& ret_bool);
@@ -91,14 +94,18 @@ namespace snake
 			private:
 				void output_serialize_item(OutputCpp& cpp, const std::string& local_var, const std::string& proto_var, const std::string& ret_bool);
 				void output_serialize_list(OutputCpp& cpp, const std::string& local_var, const std::string& proto_var, const std::string& ret_bool);
+				void output_serialize_map(OutputCpp& cpp, const std::string& local_var, const std::string& proto_var, const std::string& ret_bool);
 				void output_deserialize_item(OutputCpp& cpp, const std::string& proto_var, const std::string& local_var, const std::string& ret_bool);
 				void output_deserialize_list(OutputCpp& cpp, const std::string& proto_var, const std::string& local_var, const std::string& ret_bool);
+				void output_deserialize_map(OutputCpp& cpp, const std::string& proto_var, const std::string& local_var, const std::string& ret_bool);
 				
 				std::string name_ {};
 				std::string cpp_type_ {};
 				FieldDescriptor::CppType dsp_cpp_type_enum_ {};
 				bool is_list_ {false};
 				bool is_map_ {false};
+				FieldType::Ptr key_field_;
+				FieldType::Ptr value_field_;
 			};
 
 			class ClassType : public TypeT<ClassType>

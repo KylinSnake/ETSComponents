@@ -1,4 +1,3 @@
-#include <time.h>
 #include <cmath>
 #include <DateTime.h>
 
@@ -198,6 +197,21 @@ namespace snake
 		std::string DateTime::format(const std::string& fmt, uint32_t digit_lt_one_sec) const
 		{
 			return format(fmt, *this, digit_lt_one_sec);
+		}
+
+		std::string DateTime::format_from_default() const
+		{
+			return format_from_default(*this);
+		}
+
+		std::string DateTime::format_from_default(const DateTime& d)
+		{
+			return format("%Y%m%d-%H:%M:%S", d, 0);
+		}
+
+		std::string DateTime::format_fully() const
+		{
+			return format("%Y%m%d-%H:%M:%S", *this, 9);
 		}
 	}
 }
