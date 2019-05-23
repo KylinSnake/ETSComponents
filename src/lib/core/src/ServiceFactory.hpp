@@ -12,7 +12,7 @@ namespace snake
 {
 	namespace core
 	{
-		class ServiceFactory final : public SingletonT<ServiceFactory>
+		class ServiceFactory final : public snake::util::SingletonT<ServiceFactory>
 		{
 		public:
 			ServiceFactory() = default;

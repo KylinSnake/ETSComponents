@@ -43,8 +43,8 @@ namespace snake
 			std::string log_file_name_{};
 			bool log_initialized_ {false};
 			bool is_running_ {false};
-			Mutex mutex_{};
-			ConditionVariable cv_{};
+			snake::concurrency::Mutex mutex_{};
+			snake::concurrency::ConditionVariable cv_{};
 			std::map<std::string, ServicePointer> services_map_{};
 			std::map<std::string, void*> loaded_libs_{};
 		};

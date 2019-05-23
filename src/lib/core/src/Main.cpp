@@ -9,7 +9,7 @@ namespace snake
 {
 	using Application = snake::core::Application;
 	using Service = snake::core::Service;
-	using Exception = snake::core::Exception;
+	using Exception = snake::util::Exception;
 
 	inline Application& app()
 	{

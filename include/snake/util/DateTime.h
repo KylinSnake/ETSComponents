@@ -13,7 +13,7 @@ using namespace std::chrono;
 
 namespace snake
 {
-	namespace core
+	namespace util
 	{
 		class DateTime
 		{

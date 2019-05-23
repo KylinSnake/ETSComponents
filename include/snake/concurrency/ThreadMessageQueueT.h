@@ -8,7 +8,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace concurrency
 	{
 		template<typename T, 
 			template<typename U> class ContainerT = QueueT,

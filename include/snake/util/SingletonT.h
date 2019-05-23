@@ -3,7 +3,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace util
 	{
 		template<typename T>
 		class SingletonT

@@ -14,6 +14,9 @@
 constexpr size_t ONE_MEGA = 1024 * 1024;
 constexpr size_t MAX_FILE_SIZE = 10 * 1024 * ONE_MEGA; // 10G
 
+using namespace snake::util;
+using namespace snake::concurrency;
+
 namespace snake
 {
 	namespace core

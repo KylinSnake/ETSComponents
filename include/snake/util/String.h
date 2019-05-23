@@ -7,7 +7,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace util
 	{
 		inline std::string& ltrim(std::string& str, const std::string& chars = "\t\n\v\f\r ")
 		{

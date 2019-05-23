@@ -8,6 +8,9 @@
 #include <snake/core/Log.h>
 #include <snake/util/Exception.h>
 
+using namespace snake::util;
+using namespace snake::concurrency;
+
 namespace snake
 {
 	namespace core

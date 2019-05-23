@@ -11,7 +11,7 @@ namespace snake
 {
 	namespace core
 	{
-		class Logger : public SingletonT<Logger>
+		class Logger : public snake::util::SingletonT<Logger>
 		{
 		public:
 			Logger();
@@ -46,9 +46,9 @@ namespace snake
 			uint64_t current_size_;
 			std::string filename_;
 
-			std::unique_ptr<BufferPool<char>> pool_ptr_;
-			Mutex pool_lock_;
-			std::unique_ptr<EventLoopExecutor<std::list<LogItem>>> loop_ptr_;
+			std::unique_ptr<snake::util::BufferPool<char>> pool_ptr_;
+			snake::concurrency::Mutex pool_lock_;
+			std::unique_ptr<snake::concurrency::EventLoopExecutor<std::list<LogItem>>> loop_ptr_;
 			size_t log_item_data_capacity_;
 			bool is_started_;
 			LogLevel level_;

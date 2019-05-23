@@ -12,7 +12,7 @@ namespace snake
 			std::string Type::full_proto_ns() const
 			{
 				if (namespaces_.size() > 0)
-					return "::" + snake::core::join(namespaces_,"::");
+					return "::" + snake::util::join(namespaces_,"::");
 				return "";
 			}
 
@@ -21,7 +21,7 @@ namespace snake
 				std::string p = "";
 				if (parents_.size()>0)
 				{
-					p = snake::core::join(parents_, "::") + "::";
+					p = snake::util::join(parents_, "::") + "::";
 				}
 				return p + name_;
 			}
@@ -29,9 +29,9 @@ namespace snake
 			void Type::parse_type(const std::string& name, const FileDescriptor* file, const std::vector<std::string>& parent)
 			{
 				name_ = name;
-				auto n = snake::core::split(file->name(), "/.");
+				auto n = snake::util::split(file->name(), "/.");
 				proto_source_name_ = n[n.size()-2];
-				namespaces_ = snake::core::split(file->package(), ".");
+				namespaces_ = snake::util::split(file->package(), ".");
 				parents_ = parent;
 			}
 
@@ -138,7 +138,7 @@ namespace snake
 					{
 						hpp.add_header("snake/util/DateTime.h");
 						cpp.add_header("google/protobuf/util/time_util.h");
-						p->cpp_type_ = "snake::core::DateTime";
+						p->cpp_type_ = "snake::util::DateTime";
 					}
 					else
 					{
@@ -197,7 +197,7 @@ namespace snake
 				cpp.print_line("for(int i = 0; i < " + proto_var + "." + name_ + "_size(); ++i)");
 				cpp.print_line("{");
 				cpp.increment_tab();
-				if(cpp_type_ == "snake::core::DateTime")
+				if(cpp_type_ == "snake::util::DateTime")
 				{
 					cpp.print_line(local_var + "." + name_ + ".push_back(google::protobuf::util::TimeUtil::TimestampToNanoseconds(" + proto_var + "." + name_ + "(i)));");
 				}
@@ -223,7 +223,7 @@ namespace snake
 			{
 				auto e= [](OutputCpp& cpp, const std::string& proto, const std::string& local, const std::string& cpp_type, FieldDescriptor::CppType type_enum, const std::string& ret_bool)
 				{
-					if(cpp_type == "snake::core::DateTime")
+					if(cpp_type == "snake::util::DateTime")
 					{
 						cpp.print_line(local + " = google::protobuf::util::TimeUtil::TimestampToNanoseconds(" + proto + ");");
 					}
@@ -255,7 +255,7 @@ namespace snake
 
 			void FieldType::output_deserialize_item(OutputCpp& cpp, const std::string& proto_var, const std::string& local_var, const std::string& ret_bool)
 			{
-				if(cpp_type_ == "snake::core::DateTime")
+				if(cpp_type_ == "snake::util::DateTime")
 				{
 					cpp.print_line(local_var + "." + name_ + " = google::protobuf::util::TimeUtil::TimestampToNanoseconds(" + proto_var + "." + name_ + "());");
 				}
@@ -295,7 +295,7 @@ namespace snake
 				cpp.print_line("{");
 				cpp.increment_tab();
 
-				if(cpp_type_ == "snake::core::DateTime")
+				if(cpp_type_ == "snake::util::DateTime")
 				{
 					cpp.print_line("*" + proto_var + ".add_" + name_ + "() = google::protobuf::util::TimeUtil::NanosecondsToTimestamp(std::int64_t(p));");
 				}
@@ -320,7 +320,7 @@ namespace snake
 			{
 				auto e= [](OutputCpp& cpp, const std::string& local, const std::string& proto, const std::string& cpp_type, FieldDescriptor::CppType type_enum, const std::string& ret_bool)
 				{
-					if(cpp_type == "snake::core::DateTime")
+					if(cpp_type == "snake::util::DateTime")
 					{
 						cpp.print_line(proto + " = google::protobuf::util::TimeUtil::NanosecondsToTimestamp(std::int64_t (" + local + "));");
 					}
@@ -353,7 +353,7 @@ namespace snake
 
 			void FieldType::output_serialize_item(OutputCpp& cpp, const std::string& local_var, const std::string& proto_var, const std::string& ret_bool)
 			{
-				if(cpp_type_ == "snake::core::DateTime")
+				if(cpp_type_ == "snake::util::DateTime")
 				{
 					cpp.print_line("*" + proto_var + ".mutable_" + name_ + "() = google::protobuf::util::TimeUtil::NanosecondsToTimestamp(std::int64_t(" + local_var + "." + name_ + "));");
 				}
@@ -426,7 +426,7 @@ namespace snake
 				if(base_type_.empty())
 				{
 					hpp.print_line(name_ + "(): major_version{MESSAGE_MAJOR_VERSION}, minor_version{MESSAGE_MINOR_VERSION}");
-					hpp.print_line("{ last_update = snake::core::DateTime::now(); }");
+					hpp.print_line("{ last_update = snake::util::DateTime::now(); }");
 					hpp.print_line("~" + name_ + "() = default;");
 				}
 				else if(name_ == "MessageVersion")
@@ -454,7 +454,7 @@ namespace snake
 					hpp.print_line("virtual MessageType type() const;");
 					hpp.print_line("virtual bool serialize(std::string&) const = 0;");
 					hpp.print_line("virtual bool deserialize(const std::string&) = 0;");
-					hpp.print_line("void set_last_update() { last_update = snake::core::DateTime::now(); }");
+					hpp.print_line("void set_last_update() { last_update = snake::util::DateTime::now(); }");
 				}
 				else
 				{
@@ -469,7 +469,7 @@ namespace snake
 
 			void ClassType::output(OutputCpp& cpp)
 			{
-				auto lower_name = snake::core::to_lower(name_);
+				auto lower_name = snake::util::to_lower(name_);
 				// bool protobuf_to_class()
 				cpp.print_line("bool protobuf_to_" + name_ + "(const " + full_proto_ns() + "::" + name_ + "& proto_var, " + name_ + "& local_var)");
 				cpp.print_line("{");
@@ -519,7 +519,7 @@ namespace snake
 				cpp.print_line("MessageType " + name_ + "::type() const");
 				cpp.print_line("{");
 				cpp.increment_tab();
-				cpp.print_line("return MessageType::" + (base_type_.empty() ? "UNKNOWN" : snake::core::to_upper(snake::core::camel_to_lower_case(name_))) + ";");
+				cpp.print_line("return MessageType::" + (base_type_.empty() ? "UNKNOWN" : snake::util::to_upper(snake::util::camel_to_lower_case(name_))) + ";");
 				cpp.decrement_tab();
 				cpp.print_line("}");
 				cpp.print_line();
@@ -653,7 +653,7 @@ namespace snake
 				cpp.increment_tab();
 				for (auto& p : fields_)
 				{
-					auto name = snake::core::to_lower(p.first);
+					auto name = snake::util::to_lower(p.first);
 					auto type = p.second;
 
 					cpp.print_line("if (item.has_"+name+"())");
@@ -707,14 +707,14 @@ namespace snake
 				cpp.print_line("auto type = ptr->type();");
 				for(auto& p : fields_)
 				{
-					cpp.print_line("if (type == MessageType::" + snake::core::to_upper(snake::core::camel_to_lower_case(p.second)) + ")");
+					cpp.print_line("if (type == MessageType::" + snake::util::to_upper(snake::util::camel_to_lower_case(p.second)) + ")");
 					cpp.print_line("{");
 					cpp.increment_tab();
 					cpp.print_line("auto msg = dynamic_cast<const " + p.second + "*>(ptr);");
 					cpp.print_line("assert(msg != nullptr);");
 					cpp.print_line("proto::" + p.second + " t{};");
 					cpp.print_line("if(!" + p.second + "_to_protobuf(*msg, t)) return false;");
-					cpp.print_line("*(f.add_item()->mutable_" + snake::core::to_lower(p.first) + "()) = t;");
+					cpp.print_line("*(f.add_item()->mutable_" + snake::util::to_lower(p.first) + "()) = t;");
 					cpp.print_line("continue;");
 					cpp.decrement_tab();
 					cpp.print_line("}");

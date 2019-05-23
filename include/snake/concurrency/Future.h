@@ -5,7 +5,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace concurrency
 	{
 		template <class T>
 		using Future = std::future<T>;

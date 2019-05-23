@@ -167,7 +167,7 @@ namespace snake { namespace message {
 
 		void OutputHpp::output_pre_headers()
 		{
-			auto s = snake::core::split(snake::core::to_upper(file_name()), ".")[0];
+			auto s = snake::util::split(snake::util::to_upper(file_name()), ".")[0];
 			print_line("#ifndef SNAKE_MESSAGE_" + s + "_H");
 			print_line("#define SNAKE_MESSAGE_" + s + "_H");
 			print_line("");

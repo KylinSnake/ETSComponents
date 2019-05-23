@@ -7,7 +7,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace util
 	{
 		template<class T>
 		class BufferPool

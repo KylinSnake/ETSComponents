@@ -3,7 +3,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace util
 	{
 		inline bool localtime(const TimePoint& tp, struct tm& ret)
 		{

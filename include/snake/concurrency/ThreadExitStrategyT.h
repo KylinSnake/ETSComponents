@@ -3,7 +3,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace concurrency
 	{
 		template<typename ElementContainerT>
 		struct exit_immediately

@@ -15,7 +15,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace concurrency
 	{
 
 		template<class T

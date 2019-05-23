@@ -6,7 +6,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace concurrency
 	{
 		template<class T, template<class U> class QueueT>
 		class SharedQueueGroupT

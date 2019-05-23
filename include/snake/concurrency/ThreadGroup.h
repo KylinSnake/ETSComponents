@@ -9,7 +9,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace concurrency
 	{
 
 		template<typename T>

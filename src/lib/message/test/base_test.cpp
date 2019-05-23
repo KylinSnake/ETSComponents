@@ -35,9 +35,9 @@ TEST_CASE("test_message_generator_with_test_message", "[TestMessage][Message][Me
 	msg1.integers.push_back(13);
 	msg1.integers.push_back(42);
 
-	auto t = snake::core::DateTime::now();
+	auto t = snake::util::DateTime::now();
 	msg1.stamps.push_back(t);
-	msg1.stamps.push_back(t - snake::core::Days(1));
+	msg1.stamps.push_back(t - snake::util::Days(1));
 
 	msg1.version_map["V1"] = version;
 	msg1.version_map["V2"] = v2;
@@ -63,7 +63,7 @@ TEST_CASE("test_message_generator_with_test_message", "[TestMessage][Message][Me
 	REQUIRE(msg1.stamps.size() == msg2.stamps.size());
 	REQUIRE(msg1.stamps[0] == msg2.stamps[0]);
 	REQUIRE(msg1.stamps[1] == msg2.stamps[1]);
-	REQUIRE(msg2.stamps[0] - msg2.stamps[1] == snake::core::Days(1));
+	REQUIRE(msg2.stamps[0] - msg2.stamps[1] == snake::util::Days(1));
 	REQUIRE(msg1.version_map.size() == msg2.version_map.size());
 	REQUIRE(msg1.time_map.size() == msg2.time_map.size());
 	REQUIRE(msg1.version_map["V1"] == msg2.version_map["V1"]);

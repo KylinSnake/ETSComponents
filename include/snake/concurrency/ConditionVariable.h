@@ -5,7 +5,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace concurrency
 	{
 		using ConditionVariable = std::condition_variable;
 		using ConditionVariableAny = std::condition_variable_any;

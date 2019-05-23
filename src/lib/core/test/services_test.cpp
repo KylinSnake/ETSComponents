@@ -11,6 +11,7 @@
 #include "fake_service.hpp"
 
 using namespace snake::core;
+using namespace snake::util;
 
 TEST_CASE("test_config", "[Config][YAML][Util]")
 {

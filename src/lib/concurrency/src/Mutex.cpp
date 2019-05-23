@@ -2,7 +2,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace concurrency
 	{
 		void LockFreeMutex::lock()
 		{

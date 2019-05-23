@@ -5,7 +5,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace util
 	{
 		using Exception = std::exception;
 		using InvalidArgumentException = std::invalid_argument;

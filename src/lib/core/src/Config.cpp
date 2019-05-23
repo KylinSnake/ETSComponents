@@ -3,6 +3,8 @@
 
 #include <algorithm>
 
+using namespace snake::util;
+
 namespace snake
 {
 	namespace core

@@ -6,7 +6,7 @@
 
 namespace snake
 {
-	namespace core
+	namespace concurrency
 	{
 		using Mutex = std::mutex;
 		using RecurisveMutex = std::recursive_mutex;
