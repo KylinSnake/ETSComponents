@@ -1,6 +1,6 @@
 #include <cstring>
-#include "Logger.hpp"
-#include "Log.h"
+#include <Logger.hpp>
+#include <snake/core/Log.h>
 using namespace snake::core;
 
 void Log::alloc_log_item()

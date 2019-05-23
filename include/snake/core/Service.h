@@ -1,7 +1,7 @@
 #ifndef SNAKE_CORE_SERVICE_H
 #define SNAKE_CORE_SERVICE_H
 
-#include <Config.h>
+#include <snake/core/Config.h>
 #include <string>
 #include <memory>
 

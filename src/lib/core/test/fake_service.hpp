@@ -1,7 +1,7 @@
 #ifndef SNAKE_TEST_FAKE_SERVICE_HPP
 #define SNAKE_TEST_FAKE_SERVICE_HPP
 
-#include <ServiceT.h>
+#include <snake/core/ServiceT.h>
 
 namespace snake
 {

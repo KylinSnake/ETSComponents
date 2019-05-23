@@ -1,11 +1,11 @@
 #ifndef SNAKE_CORE_THREAD_GROUP_H
 #define SNAKE_CORE_THREAD_GROUP_H
 
-#include "ThreadGroupT.h"
-#include "ThreadQueueGroupT.h"
-#include "ThreadDispatchT.h"
-#include "ThreadMessageQueueT.h"
-#include "ThreadMessageContainerT.h"
+#include <snake/concurrency/ThreadGroupT.h>
+#include <snake/concurrency/ThreadQueueGroupT.h>
+#include <snake/concurrency/ThreadDispatchT.h>
+#include <snake/concurrency/ThreadMessageQueueT.h>
+#include <snake/concurrency/ThreadMessageContainerT.h>
 
 namespace snake
 {

@@ -1,9 +1,9 @@
 #ifndef SNAKE_CORE_THREAD_MESSAGE_QUEUE_T_H
 #define SNAKE_CORE_THREAD_MESSAGE_QUEUE_T_H
 
-#include "ThreadMessageContainerT.h"
-#include "ThreadExitStrategyT.h"
-#include "ConditionVariable.h"
+#include <snake/concurrency/ThreadMessageContainerT.h>
+#include <snake/concurrency/ThreadExitStrategyT.h>
+#include <snake/concurrency/ConditionVariable.h>
 #include <exception>
 
 namespace snake

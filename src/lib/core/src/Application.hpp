@@ -4,10 +4,10 @@
 #include <map>
 #include <memory>
 
-#include <Service.h>
-#include <Config.h>
-#include <ConditionVariable.h>
-#include <Mutex.h>
+#include <snake/core/Service.h>
+#include <snake/core/Config.h>
+#include <snake/concurrency/ConditionVariable.h>
+#include <snake/concurrency/Mutex.h>
 
 namespace snake
 {

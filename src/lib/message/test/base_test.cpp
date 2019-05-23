@@ -1,4 +1,4 @@
-#include <TestMessage.h>
+#include <snake/message/TestMessage.h>
 
 #include <catch.hpp>
 

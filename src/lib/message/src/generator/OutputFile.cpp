@@ -5,7 +5,7 @@
 #include <OutputFile.hpp>
 #include <Type.hpp>
 
-#include <String.h>
+#include <snake/util/String.h>
 
 namespace snake { namespace message {
 	namespace __protobuf__

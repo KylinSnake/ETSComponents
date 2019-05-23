@@ -5,8 +5,8 @@
 #include <Application.hpp>
 #include <Logger.hpp>
 #include <ServiceFactory.hpp>
-#include <Log.h>
-#include <Exception.h>
+#include <snake/core/Log.h>
+#include <snake/util/Exception.h>
 
 namespace snake
 {

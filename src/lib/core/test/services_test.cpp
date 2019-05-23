@@ -3,10 +3,10 @@
 #include <iostream>
 
 #include <catch.hpp>
-#include <ServiceT.h>
+#include <snake/core/ServiceT.h>
 #include <Application.hpp>
-#include <Config.h>
-#include <Exception.h>
+#include <snake/core/Config.h>
+#include <snake/util/Exception.h>
 
 #include "fake_service.hpp"
 

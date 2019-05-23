@@ -9,7 +9,7 @@
 
 #include <fstream>
 
-#include <String.h>
+#include <snake/util/String.h>
 #include <Type.hpp>
 #include <OutputFile.hpp>
 
@@ -45,7 +45,7 @@ namespace snake
 					if(enm->parse(dsp, parent, *hpp, cpp))
 					{
 						hpp->set_file_name(enm->name() + ".h");
-						hpp->set_path("include");
+						hpp->set_path("include/snake/message");
 						hpps.push_back(hpp);
 					}
 				}
@@ -74,7 +74,7 @@ namespace snake
 					if(result)
 					{
 						hpp->set_file_name(file_name + ".h");
-						hpp->set_path("include");
+						hpp->set_path("include/snake/message");
 						hpps.push_back(hpp);
 					}
 					else

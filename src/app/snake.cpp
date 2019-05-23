@@ -1,4 +1,4 @@
-#include <Main.h>
+#include <snake/core/Main.h>
 
 int main(int argc, char* argv[])
 {

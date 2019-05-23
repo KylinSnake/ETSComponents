@@ -74,12 +74,6 @@ else
   BUILD_TYPE="Release"
 fi
 
-if [ "`uname -p`" == "x86" ]; then
-  BUILD_TYPE="${BUILD_TYPE}32"
-else
-  BUILD_TYPE="${BUILD_TYPE}64"
-fi
-
 BUILD_FOLDER=${FOLDER}/build/${BUILD_TYPE}
 if [ $CLEAN -eq 1 ]; then
   echo "Clean the build...."

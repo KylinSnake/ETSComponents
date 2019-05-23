@@ -1,7 +1,7 @@
 #ifndef SNAKE_CORE_SERVICET_H
 #define SNAKE_CORE_SERVICET_H
 
-#include <Service.h>
+#include <snake/core/Service.h>
 #include <memory>
 
 #define REGISTER_SERVICE(X)  bool registered_##X = X::register_service(); 

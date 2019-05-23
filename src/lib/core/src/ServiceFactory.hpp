@@ -5,8 +5,8 @@
 #include <string>
 #include <type_traits>
 
-#include <SingletonT.h>
-#include <Service.h>
+#include <snake/util/SingletonT.h>
+#include <snake/core/Service.h>
 
 namespace snake
 {

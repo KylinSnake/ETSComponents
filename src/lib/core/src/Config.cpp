@@ -1,5 +1,5 @@
-#include <Config.h>
-#include <Exception.h>
+#include <snake/core/Config.h>
+#include <snake/util/Exception.h>
 
 #include <algorithm>
 

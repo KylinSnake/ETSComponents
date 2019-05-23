@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include <Main.h>
-#include <Log.h>
+#include <snake/core/Main.h>
+#include <snake/core/Log.h>
 #include <Application.hpp>
-#include <Exception.h>
+#include <snake/util/Exception.h>
 
 namespace snake
 {

@@ -1,6 +1,5 @@
-
 #include <Type.hpp>
-#include <String.h>
+#include <snake/util/String.h>
 
 namespace snake
 {
@@ -50,7 +49,7 @@ namespace snake
 
 				hpp.add_type(This());
 				cpp.add_type(This());
-				cpp.add_header(name_ + ".h");
+				cpp.add_header("snake/message/" + name_ + ".h");
 				cpp.add_header(proto_source_name_ + ".pb.h");
 
 				return true;
@@ -123,7 +122,7 @@ namespace snake
 				}
 				else if (p->dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_ENUM)
 				{
-					hpp.add_header(dsp->enum_type()->name() + ".h");
+					hpp.add_header("snake/message/" + dsp->enum_type()->name() + ".h");
 					p->cpp_type_ = dsp->enum_type()->name();
 				}
 				else if (p->dsp_cpp_type_enum_ == FieldDescriptor::CppType::CPPTYPE_INT32
@@ -137,13 +136,13 @@ namespace snake
 				{
 					if (dsp->message_type()->full_name() == "google.protobuf.Timestamp")
 					{
-						hpp.add_header("DateTime.h");
+						hpp.add_header("snake/util/DateTime.h");
 						cpp.add_header("google/protobuf/util/time_util.h");
 						p->cpp_type_ = "snake::core::DateTime";
 					}
 					else
 					{
-						hpp.add_header(dsp->message_type()->name() + ".h");
+						hpp.add_header("snake/message/" + dsp->message_type()->name() + ".h");
 						p->cpp_type_ = dsp->message_type()->name();
 					}
 				}
@@ -384,7 +383,7 @@ namespace snake
 					if (v->number() == 1 && v->name() == "base")
 					{
 						base_type_ = v->message_type()->name();
-						hpp.add_header(base_type_ + ".h");
+						hpp.add_header("snake/message/" + base_type_ + ".h");
 						continue;
 					}
 					auto p = FieldType::create(v, hpp, cpp);
@@ -397,10 +396,10 @@ namespace snake
 				
 				hpp.add_type(This());
 				cpp.add_type(This());
-				cpp.add_header(name_ + ".h");
+				cpp.add_header("snake/message/" + name_ + ".h");
 				if (base_type_.empty())
 				{
-					hpp.add_header("MessageType.h");
+					hpp.add_header("snake/message/MessageType.h");
 				}
 				cpp.add_global_function_decl("bool " + name_ + "_to_protobuf(const " + name_ + "&," + full_proto_ns() + "::" + name_ + "&);");
 				cpp.add_global_function_decl("bool protobuf_to_" + name_ + "(const " + full_proto_ns() + "::" + name_ + "&, " + name_ + "&);");
@@ -618,7 +617,7 @@ namespace snake
 				hpp.add_header("functional");
 				hpp.add_header("string");
 				cpp.add_header(proto_source_name_ + ".pb.h");
-				cpp.add_header(name_ + ".h");
+				cpp.add_header("snake/message/" + name_ + ".h");
 
 				hpp.add_type(This());
 				cpp.add_type(This());

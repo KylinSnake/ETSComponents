@@ -1,7 +1,7 @@
 #ifndef SNAKE_MAIN_H
 #define SNAKE_MAIN_H
 
-#include <Service.h>
+#include <snake/core/Service.h>
 
 namespace snake
 {

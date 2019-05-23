@@ -7,11 +7,11 @@
 #include <tuple>
 #include <algorithm>
 #include <type_traits>
-#include "Mutex.h"
-#include "ConditionVariable.h"
-#include "Thread.h"
-#include "Future.h"
-#include "Atomic.h"
+#include <snake/concurrency/Mutex.h>
+#include <snake/concurrency/ConditionVariable.h>
+#include <snake/concurrency/Thread.h>
+#include <snake/concurrency/Future.h>
+#include <snake/concurrency/Atomic.h>
 
 namespace snake
 {

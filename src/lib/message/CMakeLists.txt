@@ -40,7 +40,7 @@ add_compile_definitions(
 add_library(message ${CDIR}/generated.cpp ${CSRC})
 target_include_directories(message
 	PUBLIC
-		$<INSTALL_INTERFACE:include/message/>
+		$<INSTALL_INTERFACE:${INSTALL_HEADER_FOLDER}>
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/>
 	PRIVATE
 		${CDIR}/
@@ -51,14 +51,13 @@ install(TARGETS message
 		EXPORT snakes-exports
 		LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/message/)
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/ DESTINATION ${INSTALL_HEADER_FOLDER}/)
 
 
 add_executable(message_test
-	test/main.cpp
+	$<TARGET_OBJECTS:test_main>
 	test/base_test.cpp
 )
-message(STATUS "${CDIR}/include/")
 target_include_directories(message_test PRIVATE ${CDIR}/)
 target_link_libraries(message_test message tp::catch2)
 add_test(NAME MessageTest COMMAND message_test)

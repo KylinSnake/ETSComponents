@@ -10,8 +10,8 @@ add_library(core
 
 target_include_directories(core
 	PUBLIC
-		$<INSTALL_INTERFACE:include/core/>
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+		$<INSTALL_INTERFACE:${INSTALL_HEADER_FOLDER}>
+		$<BUILD_INTERFACE:${PUBLIC_HEADER_FOLDER}>
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(core util concurrency ${CMAKE_DL_LIBS} yaml-cpp)
@@ -20,14 +20,12 @@ install(TARGETS core
 		EXPORT snakes-exports
 		LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include/core/)
-
 
 add_library(test_service SHARED test/fake_service.cpp)
 target_link_libraries(test_service core)
 
 add_executable(core_test 
-	test/main.cpp 
+	$<TARGET_OBJECTS:test_main>
 	test/services_test.cpp
 )
 target_include_directories(core_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)

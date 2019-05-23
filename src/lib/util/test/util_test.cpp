@@ -1,8 +1,8 @@
 #include <catch.hpp>
-#include <BufferPool.h>
-#include <String.h>
-#include <Exception.h>
-#include <DateTime.h>
+#include <snake/util/BufferPool.h>
+#include <snake/util/String.h>
+#include <snake/util/Exception.h>
+#include <snake/util/DateTime.h>
 
 #include <iostream>
 

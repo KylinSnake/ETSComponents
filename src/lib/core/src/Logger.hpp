@@ -2,10 +2,10 @@
 #define SNAKE_CORE_LOGGER_HPP
 
 #include <string>
-#include "LogUtil.h"
-#include "BufferPool.h"
-#include "SingletonT.h"
-#include "ThreadGroup.h"
+#include <snake/core/LogUtil.h>
+#include <snake/util/BufferPool.h>
+#include <snake/util/SingletonT.h>
+#include <snake/concurrency/ThreadGroup.h>
 
 namespace snake
 {

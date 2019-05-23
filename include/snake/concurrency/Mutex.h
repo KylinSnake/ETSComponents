@@ -2,7 +2,7 @@
 #define SNAKE_CORE_MUTEX_H
 
 #include <mutex>
-#include <Atomic.h>
+#include <snake/concurrency/Atomic.h>
 
 namespace snake
 {
