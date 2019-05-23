@@ -6,7 +6,6 @@ add_library(core
 	src/ServiceFactory.cpp
 	src/Service.cpp
 	src/Config.cpp
-	src/DateTime.cpp
 )
 
 target_include_directories(core
@@ -15,7 +14,7 @@ target_include_directories(core
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_link_libraries(core ${CMAKE_DL_LIBS} yaml-cpp Threads::Threads)
+target_link_libraries(core util concurrency ${CMAKE_DL_LIBS} yaml-cpp)
 
 install(TARGETS core
 		EXPORT snakes-exports
@@ -29,7 +28,6 @@ target_link_libraries(test_service core)
 
 add_executable(core_test 
 	test/main.cpp 
-	test/util_test.cpp 
 	test/services_test.cpp
 )
 target_include_directories(core_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)

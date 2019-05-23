@@ -8,7 +8,7 @@ target_include_directories(message_generator
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/src/generator
 )
-target_link_libraries(message_generator core tp::protobuf ${PROTOBUF_LIBRARY_DIRS}/libprotoc.so)
+target_link_libraries(message_generator util Threads::Threads tp::protobuf ${PROTOBUF_LIBRARY_DIRS}/libprotoc.so)
 
 set(SRC 
 	base 
@@ -46,7 +46,7 @@ target_include_directories(message
 		${CDIR}/
 )
 
-target_link_libraries(message core tp::protobuf)
+target_link_libraries(message util tp::protobuf Threads::Threads)
 install(TARGETS message
 		EXPORT snakes-exports
 		LIBRARY DESTINATION lib

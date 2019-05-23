@@ -19,5 +19,7 @@ include(tp)
 
 add_subdirectory(src/lib/core)
 add_subdirectory(src/lib/message)
+add_subdirectory(src/lib/concurrency)
+add_subdirectory(src/lib/util)
 
 add_subdirectory(src/app)

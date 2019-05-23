@@ -13,13 +13,9 @@ namespace snake
 		class AtomicFlag
 		{
 		public:
-			AtomicFlag() noexcept
-				:flag_( ATOMIC_FLAG_INIT )
-			{
-			}
-			~AtomicFlag() noexcept
-			{
-			}
+			constexpr AtomicFlag() noexcept = default;
+			~AtomicFlag() = default;
+
 			AtomicFlag( const AtomicFlag& ) = delete;
 			AtomicFlag& operator=( const AtomicFlag& ) = delete;
 			bool test_and_set() noexcept
@@ -31,7 +27,7 @@ namespace snake
 				return flag_.clear();
 			}
 		private:
-			std::atomic_flag flag_;
+			std::atomic_flag flag_ {ATOMIC_FLAG_INIT};
 		};
 	}
 }
