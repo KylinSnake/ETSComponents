@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "base.proto";
 
-package snake.message.proto;
+package snake.proto;
 
 message MessageFactory
 {

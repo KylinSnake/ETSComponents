@@ -1,7 +1,7 @@
 #include <cstring>
 #include <Logger.hpp>
 #include <snake/core/Log.h>
-using namespace snake::core;
+using namespace snake;
 
 void Log::alloc_log_item()
 {
@@ -41,7 +41,7 @@ size_t Log::write( const char* p, size_t len )
 		if (buffers_.empty())
 		{
 			alloc_log_item();
-			buffers_.back().length = std::sprintf( buffers_.back().data, "| %lu | %s | ", global::current_thread::get_id(), logLevel_to_string( level_ ) );
+			buffers_.back().length = std::sprintf( buffers_.back().data, "| %lu | %s | ", snake::current_thread::get_id(), logLevel_to_string( level_ ) );
 		}
 		LogItem& item = buffers_.back();
 		size_t capacity = capacities_.back();

@@ -24,7 +24,7 @@ public:
 	}
 private:
 	void alloc_log_item();
-	std::list<snake::core::LogItem> buffers_;
+	std::list<snake::LogItem> buffers_;
 	std::list<size_t> capacities_;
 	LogLevel level_;
 	bool need_log_;

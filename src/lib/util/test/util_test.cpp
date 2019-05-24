@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-using namespace snake::util;
+using namespace snake;
 
 struct buffer_item
 {

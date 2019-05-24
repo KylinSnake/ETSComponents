@@ -3,7 +3,7 @@ syntax = "proto3";
 import "google/protobuf/timestamp.proto";
 import "message_type.proto";
 
-package snake.message.proto;
+package snake.proto;
 
 message MessageBase
 {

@@ -6,20 +6,14 @@
 
 namespace snake
 {
-	namespace concurrency
-	{
-		using Thread = std::thread;
-		using ThreadId = unsigned long;
-	}
-}
+	using Thread = std::thread;
+	using ThreadId = unsigned long;
 
-namespace global
-{
 	namespace current_thread
 	{
-		inline snake::concurrency::ThreadId get_id() noexcept
+		inline snake::ThreadId get_id() noexcept
 		{
-			return static_cast<snake::concurrency::ThreadId>(pthread_self());
+			return static_cast<snake::ThreadId>(pthread_self());
 		}
 		
 		inline void yield() noexcept

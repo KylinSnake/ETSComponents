@@ -7,9 +7,9 @@
 
 namespace snake
 {
-	using Application = snake::core::Application;
-	using Service = snake::core::Service;
-	using Exception = snake::util::Exception;
+	using Application = snake::Application;
+	using Service = snake::Service;
+	using Exception = snake::Exception;
 
 	inline Application& app()
 	{
@@ -22,7 +22,7 @@ namespace snake
 		app().shutdown();
 	}
 
-	core::ServicePointer Main::get_service_ptr(const std::string& name)
+	ServicePointer Main::get_service_ptr(const std::string& name)
 	{
 		return app().get_service_pointer(name);
 	}

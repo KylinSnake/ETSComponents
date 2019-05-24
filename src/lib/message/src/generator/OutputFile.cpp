@@ -7,7 +7,8 @@
 
 #include <snake/util/String.h>
 
-namespace snake { namespace message {
+namespace snake 
+{ 
 	namespace __protobuf__
 	{
 		std::string OutputFile::tabs(size_t num)
@@ -131,12 +132,12 @@ namespace snake { namespace message {
 
 		void OutputFile::output_begin_namespace()
 		{
-			print_line("namespace snake { namespace message {\n");
+			print_line("namespace snake {\n");
 		}
 
 		void OutputFile::output_end_namespace()
 		{
-			print_line("\n} }");
+			print_line("\n}");
 		}
 
 		void OutputFile::output_pre_headers()
@@ -167,7 +168,7 @@ namespace snake { namespace message {
 
 		void OutputHpp::output_pre_headers()
 		{
-			auto s = snake::util::split(snake::util::to_upper(file_name()), ".")[0];
+			auto s = snake::split(snake::to_upper(file_name()), ".")[0];
 			print_line("#ifndef SNAKE_MESSAGE_" + s + "_H");
 			print_line("#define SNAKE_MESSAGE_" + s + "_H");
 			print_line("");
@@ -214,4 +215,4 @@ namespace snake { namespace message {
 			}
 		}
 	}
-} }
+}

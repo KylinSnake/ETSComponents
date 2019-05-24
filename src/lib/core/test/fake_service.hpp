@@ -7,7 +7,6 @@ namespace snake
 {
 	namespace test
 	{
-	using namespace snake::core;
 	class FakeService : public ServiceT<FakeService>
 	{
 	public:
@@ -20,7 +19,7 @@ namespace snake
 		bool is_on_join_successful { false };
 		bool is_on_stopped_successful { false };
 	public:
-		using Base=snake::core::ServiceT<FakeService>;
+		using Base=snake::ServiceT<FakeService>;
 		FakeService() = default;
 		virtual ~FakeService() = default;
 

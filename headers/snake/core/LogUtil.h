@@ -66,14 +66,11 @@ struct SET_PRECISION
 
 namespace snake
 {
-	namespace core
+	struct LogItem
 	{
-		struct LogItem
-		{
-			size_t length;
-			char* data;
-		};
-	}
+		size_t length;
+		char* data;
+	};
 }
 
 #endif

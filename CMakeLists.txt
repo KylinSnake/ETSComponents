@@ -17,7 +17,7 @@ endif()
 include(build_env)
 include(tp)
 
-set(PUBLIC_HEADER_FOLDER ${PROJECT_SOURCE_DIR}/include)
+set(PUBLIC_HEADER_FOLDER ${PROJECT_SOURCE_DIR}/headers)
 set(INSTALL_HEADER_FOLDER ${CMAKE_INSTALL_PREFIX}/include)
 
 add_subdirectory(src/lib/core)

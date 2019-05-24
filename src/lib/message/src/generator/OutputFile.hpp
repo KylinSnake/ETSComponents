@@ -14,90 +14,87 @@ using namespace google::protobuf;
 
 namespace snake
 {
-	namespace message
+	namespace __protobuf__
 	{
-		namespace __protobuf__
+		class Type;
+
+		class OutputFile
 		{
-			class Type;
+		public:
+			OutputFile();
+			virtual ~OutputFile();
 
-			class OutputFile
-			{
-			public:
-				OutputFile();
-				virtual ~OutputFile();
+			void add_header(const std::string& header_name);
+			void add_type(const std::shared_ptr<Type>& t);
+			void set_file_name(const std::string& name);
+			void set_path(const std::string& path);
 
-				void add_header(const std::string& header_name);
-				void add_type(const std::shared_ptr<Type>& t);
-				void set_file_name(const std::string& name);
-				void set_path(const std::string& path);
+			bool output(GeneratorContext * generator_context);
 
-				bool output(GeneratorContext * generator_context);
+			const std::string& file_name() const { return file_name_; }
 
-				const std::string& file_name() const { return file_name_; }
-
-				void print_line(const std::string& line, size_t tab_num = 0);
-				
-				void print_line() { print_line(""); }
-
-				void increment_tab() { ++current_tab_num_;}
-				void decrement_tab() { --current_tab_num_;}
-
-				static std::string tabs(size_t i);
+			void print_line(const std::string& line, size_t tab_num = 0);
 			
-				void add_global_function_decl(const std::string& s);
+			void print_line() { print_line(""); }
 
-			protected:
-				void output_header_comment();
-				void output_headers();
-				void output_begin_namespace();
-				void output_end_namespace();
+			void increment_tab() { ++current_tab_num_;}
+			void decrement_tab() { --current_tab_num_;}
 
-				virtual void output_type() = 0;
+			static std::string tabs(size_t i);
+		
+			void add_global_function_decl(const std::string& s);
 
-				virtual void output_pre_headers();
-				virtual void output_after_headers();
-				virtual void output_after_end_namespace();
+		protected:
+			void output_header_comment();
+			void output_headers();
+			void output_begin_namespace();
+			void output_end_namespace();
 
-				std::set<std::string> headers_ {};
+			virtual void output_type() = 0;
 
-				std::map<std::string, std::shared_ptr<Type>> type_ptrs_ {};
-				std::string file_name_ {};
-				std::string path_{};
-				int current_tab_num_ {};
-				std::set<std::string> global_functions_ {};
+			virtual void output_pre_headers();
+			virtual void output_after_headers();
+			virtual void output_after_end_namespace();
 
-				io::ZeroCopyOutputStream * stream_ {nullptr};
+			std::set<std::string> headers_ {};
 
-			public:
-				const std::set<std::string>& get_headers() const { return headers_;}
-				const std::map<std::string, std::shared_ptr<Type>> get_types() const { return type_ptrs_;}
-			};
+			std::map<std::string, std::shared_ptr<Type>> type_ptrs_ {};
+			std::string file_name_ {};
+			std::string path_{};
+			int current_tab_num_ {};
+			std::set<std::string> global_functions_ {};
 
-			class OutputHpp : public OutputFile
-			{
-			public:
-				OutputHpp();
-				virtual ~OutputHpp();
+			io::ZeroCopyOutputStream * stream_ {nullptr};
 
-			protected:
-				virtual void output_type() override;
-				virtual void output_pre_headers() override;
-				virtual void output_after_end_namespace() override;
-			private:
-				std::set<std::string> global_functions_ {};
-			};
+		public:
+			const std::set<std::string>& get_headers() const { return headers_;}
+			const std::map<std::string, std::shared_ptr<Type>> get_types() const { return type_ptrs_;}
+		};
 
-			class OutputCpp : public OutputFile
-			{
-			public:
-				OutputCpp();
-				virtual ~OutputCpp();
+		class OutputHpp : public OutputFile
+		{
+		public:
+			OutputHpp();
+			virtual ~OutputHpp();
 
-			protected:
-				virtual void output_type() override;
+		protected:
+			virtual void output_type() override;
+			virtual void output_pre_headers() override;
+			virtual void output_after_end_namespace() override;
+		private:
+			std::set<std::string> global_functions_ {};
+		};
 
-			};
-		}
+		class OutputCpp : public OutputFile
+		{
+		public:
+			OutputCpp();
+			virtual ~OutputCpp();
+
+		protected:
+			virtual void output_type() override;
+
+		};
 	}
 }
 
