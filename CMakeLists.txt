@@ -17,14 +17,14 @@ endif()
 include(build_env)
 include(tp)
 
-set(PUBLIC_HEADER_FOLDER ${PROJECT_SOURCE_DIR}/headers)
+set(PUBLIC_HEADER_FOLDER ${PROJECT_SOURCE_DIR}/include)
 set(INSTALL_HEADER_FOLDER ${CMAKE_INSTALL_PREFIX}/include)
 
-add_subdirectory(src/lib/core)
-add_subdirectory(src/lib/message)
-add_subdirectory(src/lib/concurrency)
-add_subdirectory(src/lib/util)
+add_subdirectory(lib/core)
+add_subdirectory(lib/message)
+add_subdirectory(lib/concurrency)
+add_subdirectory(lib/util)
 
-add_subdirectory(src/app)
+add_subdirectory(app)
 
 install(DIRECTORY ${PUBLIC_HEADER_FOLDER}/ DESTINATION ${INSTALL_HEADER_FOLDER})
