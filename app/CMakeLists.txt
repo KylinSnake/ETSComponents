@@ -7,4 +7,4 @@ install(TARGETS snake
 		RUNTIME DESTINATION bin)
 
 add_library(test_main OBJECT test_main.cpp)
-target_link_libraries(test_main tp::catch2)
+target_link_libraries(test_main PRIVATE tp::catch2)

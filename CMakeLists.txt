@@ -16,6 +16,7 @@ endif()
 
 include(build_env)
 include(tp)
+include(functions)
 
 set(PUBLIC_HEADER_FOLDER ${PROJECT_SOURCE_DIR}/include)
 set(INSTALL_HEADER_FOLDER ${CMAKE_INSTALL_PREFIX}/include)

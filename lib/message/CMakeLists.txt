@@ -60,4 +60,4 @@ add_executable(message_test
 )
 target_include_directories(message_test PRIVATE ${CDIR}/)
 target_link_libraries(message_test message tp::catch2)
-add_test(NAME MessageTest COMMAND message_test)
+add_test(NAME message_test COMMAND message_test)

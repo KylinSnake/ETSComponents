@@ -98,7 +98,7 @@ fi
 
 cd ${BUILD_FOLDER}
 echo "[COMMAND]: cmake $DTYPE -DBUILD_SHARED_LIBS=on ${CMAKE_PARAM} `dirname ${SCRIPT_NAME}`"
-cmake $DTYPE -DPROJ_BUILD_DIR="$FOLDER" -DBUILD_SHARED_LIBS=on ${CMAKE_PARAM} `dirname ${SCRIPT_NAME}`
+cmake $DTYPE -DBUILD_SHARED_LIBS=on ${CMAKE_PARAM} `dirname ${SCRIPT_NAME}`
 echo "Build folder is ${BUILD_FOLDER}"
 
 if [ $BUILD -eq 1 ]; then
