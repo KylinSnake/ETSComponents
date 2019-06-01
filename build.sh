@@ -6,6 +6,7 @@ INSTALL=0
 CLEAN=0
 PARAM=
 TEST=0
+TEST_COV=0
 CMAKE_PARAM=
 
 for opt in $@
@@ -50,6 +51,13 @@ do
        DEBUG=1
 	   TEST=1
        ;;
+
+     TEST_COVERAGE)
+       DEBUG=1
+	   TEST=1
+	   TEST_COV=1
+       ;;
+
 
      *)
        if [ ${opt:0:2} == '-D' ]; then
@@ -96,9 +104,15 @@ if [ ! -d ${BUILD_FOLDER} ]; then
   mkdir -p ${BUILD_FOLDER}
 fi
 
+TEST_COV_PARAM=
+
+if [ $TEST_COV -eq 1 ];then
+	TEST_COV_PARAM="-DTEST_COVERAGE=on"
+fi
+
 cd ${BUILD_FOLDER}
-echo "[COMMAND]: cmake $DTYPE -DBUILD_SHARED_LIBS=on ${CMAKE_PARAM} `dirname ${SCRIPT_NAME}`"
-cmake $DTYPE -DBUILD_SHARED_LIBS=on ${CMAKE_PARAM} `dirname ${SCRIPT_NAME}`
+echo "[COMMAND]: cmake $DTYPE -DBUILD_SHARED_LIBS=on ${TEST_COV_PARAM} ${CMAKE_PARAM} `dirname ${SCRIPT_NAME}`"
+cmake $DTYPE -DBUILD_SHARED_LIBS=on ${TEST_COV_PARAM} ${CMAKE_PARAM} `dirname ${SCRIPT_NAME}`
 echo "Build folder is ${BUILD_FOLDER}"
 
 if [ $BUILD -eq 1 ]; then
@@ -112,6 +126,31 @@ fi
 if [ $TEST -eq 1 ]; then
 	echo "[COMMAND]: make test"
 	make CTEST_OUTPUT_ON_FAILURE=1 test
+	if [ $? -ne 0 ];then
+		exit -1
+	fi
+fi
+
+if [ $TEST_COV -eq 1 ]; then
+	echo "[COMMAND]: lcov -c -d ${BUILD_FOLDER} -o ${BUILD_FOLDER}/raw.info"
+	lcov -c -d ${BUILD_FOLDER} -o ${BUILD_FOLDER}/raw.info
+	if [ $? -ne 0 ];then
+		exit -1
+	fi
+	echo "[COMMAND]: lcov -e ${BUILD_FOLDER}/raw.info \"*snake*\" -o ${BUILD_FOLDER}/filter_a.info"
+	lcov -e ${BUILD_FOLDER}/raw.info "*snake*" -o ${BUILD_FOLDER}/filter_a.info
+	if [ $? -ne 0 ];then
+		exit -1
+	fi
+	echo "[COMMAND]: lcov -r ${BUILD_FOLDER}/filter_a.info \"*test*\" -o ${BUILD_FOLDER}/filter_b.info"
+	lcov -r ${BUILD_FOLDER}/filter_a.info "*test*" -o ${BUILD_FOLDER}/filter_b.info
+	if [ $? -ne 0 ];then
+		exit -1
+	fi
+	mkdir -p ${BUILD_FOLDER}/../TestCoverage
+	rm -rf ${BUILD_FOLDER}/../TestCoverage/*
+	echo "[COMMAND]: genhtml -o ${BUILD_FOLDER}/../TestCoverage -t "snake" ${BUILD_FOLDER}/filter_b.info"
+	genhtml -o ${BUILD_FOLDER}/../TestCoverage -t "snake" ${BUILD_FOLDER}/filter_b.info
 	if [ $? -ne 0 ];then
 		exit -1
 	fi

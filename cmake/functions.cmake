@@ -9,10 +9,10 @@ function(snake_lib target_name)
 			${CMAKE_CURRENT_SOURCE_DIR}/src
 	)
 
-	#if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-	#	target_compile_options(${target_name} PRIVATE "--coverage")
-	#	target_link_options(${target_name} PRIVATE "--coverage")
-	#endif()
+	if(TEST_COVERAGE)
+		target_compile_options(${target_name} PRIVATE "--coverage")
+		target_link_options(${target_name} PRIVATE "--coverage")
+	endif()
 
 	install(TARGETS ${target_name}
 			EXPORT snakes-exports
@@ -34,6 +34,12 @@ function(snake_test target)
 		PRIVATE
 			${CMAKE_CURRENT_SOURCE_DIR}/src
 	)
+
+	if(TEST_COVERAGE)
+		target_compile_options(${test_target} PRIVATE "--coverage")
+		target_link_options(${test_target} PRIVATE "--coverage")
+	endif()
+
 	add_test(NAME ${test_target} COMMAND $<TARGET_FILE:${test_target}>)
 	set_tests_properties(${test_target} PROPERTIES DEPENDS ${target})
 endfunction()
