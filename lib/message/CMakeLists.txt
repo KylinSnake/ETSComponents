@@ -47,6 +47,12 @@ target_include_directories(message
 )
 
 target_link_libraries(message util tp::protobuf Threads::Threads)
+
+if(TEST_COVERAGE)
+	target_compile_options(message PRIVATE "--coverage")
+	target_link_options(message PRIVATE "--coverage")
+endif()
+
 install(TARGETS message
 		EXPORT snakes-exports
 		LIBRARY DESTINATION lib
@@ -61,3 +67,7 @@ add_executable(message_test
 target_include_directories(message_test PRIVATE ${CDIR}/)
 target_link_libraries(message_test message tp::catch2)
 add_test(NAME message_test COMMAND message_test)
+if(TEST_COVERAGE)
+	target_compile_options(message_test PRIVATE "--coverage")
+	target_link_options(message_test PRIVATE "--coverage")
+endif()

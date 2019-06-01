@@ -142,8 +142,8 @@ if [ $TEST_COV -eq 1 ]; then
 	if [ $? -ne 0 ];then
 		exit -1
 	fi
-	echo "[COMMAND]: lcov -r ${BUILD_FOLDER}/filter_a.info \"*test*\" -o ${BUILD_FOLDER}/filter_b.info"
-	lcov -r ${BUILD_FOLDER}/filter_a.info "*test*" -o ${BUILD_FOLDER}/filter_b.info
+	echo "[COMMAND]: lcov -r ${BUILD_FOLDER}/filter_a.info \"*test*\" \".pb.cc\" \"*.pb.h\" -o ${BUILD_FOLDER}/filter_b.info"
+	lcov -r ${BUILD_FOLDER}/filter_a.info "*test*" "*.pb.cc" "*.pb.h" -o ${BUILD_FOLDER}/filter_b.info
 	if [ $? -ne 0 ];then
 		exit -1
 	fi
