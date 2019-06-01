@@ -2,6 +2,7 @@
 #define SNAKE_CORE_MUTEX_H
 
 #include <mutex>
+#include <shared_mutex>
 #include <snake/concurrency/Atomic.h>
 
 namespace snake
@@ -10,12 +11,23 @@ namespace snake
 	using RecurisveMutex = std::recursive_mutex;
 	using RecursiveTimedMutex = std::recursive_timed_mutex;
 	using TimedMutex = std::timed_mutex;
+	using SharedMutex = std::shared_mutex;
+	using SharedTimedMutex = std::shared_timed_mutex;
 
 	template <class T>
 	using LockGuard = std::lock_guard<T>;
 
 	template <class T>
 	using UniqueLock = std::unique_lock<T>;
+
+	template <class T>
+	using WriteLock = UniqueLock<T>;
+
+	template <class T>
+	using SharedLock = std::shared_lock<T>;
+
+	template <class T>
+	using ReadLock = SharedLock<T>;
 
 	// Std Requirement: Lockable
 	class LockFreeMutex
