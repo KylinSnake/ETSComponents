@@ -95,19 +95,6 @@ namespace snake
 			node_allocator allocator_;
 
 		private:
-
-			template<typename T>
-			inline auto extract_key(T&& v) const
-			{
-				return m_extractor_.key(std::forward<T>(v));
-			}
-
-			template<typename V>
-			inline auto extract_value(V&& v) const
-			{
-				return m_extractor_.value(std::forward<V>(v));
-			}
-
 			size_type get_bucket_index(const key_type& key, size_type n) const
 			{
 				return m_hasher_(key) % n;
@@ -133,7 +120,7 @@ namespace snake
 				auto p = m_buckets_[n];
 				while(p != nullptr)
 				{
-					if(m_equal_(key, extract_key(p->m_value_)))
+					if(m_equal_(key, m_extractor_.key(p->m_value_)))
 					{
 						break;
 					}
@@ -170,7 +157,7 @@ namespace snake
 									auto p = m_buckets_[index];
 									while(p != nullptr)
 									{
-										size_type new_index = get_bucket_index(extract_key(p->m_value_), next_bucket_num);
+										size_type new_index = get_bucket_index(m_extractor_.key(p->m_value_), next_bucket_num);
 										m_buckets_[index] = p->m_next_;
 										p->m_next_ = tmp[new_index];
 										tmp[new_index] = p;
@@ -557,7 +544,7 @@ namespace snake
 			inline mapped_value get_copy(const key_type& key) const
 			{
 				auto accessor = get(key);
-				return accessor.valid() ? extract_value(*accessor) : mapped_value{};
+				return accessor.valid() ? m_extractor_.value(*accessor) : mapped_value{};
 			}
 
 			template<typename ...Args>
@@ -575,7 +562,7 @@ namespace snake
 			template<typename T>
 			inline bool put(T&& value, bool put_if_absent)
 			{
-				auto key = extract_key(std::forward<T>(value));
+				auto key = m_extractor_.key(std::forward<T>(value));
 				UniqueAccessor p{};
 				if(put_if_absent)
 				{
@@ -587,7 +574,7 @@ namespace snake
 				}
 				if(p.valid())
 				{
-					*p = std::forward<T>(value);
+					m_extractor_.set_value(*p , m_extractor_.value(std::forward<T>(value)));
 					return true;
 				}
 				return false;

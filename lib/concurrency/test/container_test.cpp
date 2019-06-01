@@ -274,7 +274,7 @@ TEST_CASE("test_basic_function_in_single_thread", "[Container][Hash][Map][Concur
 		{
 			auto p = std::rand() % 1000;
 			auto b_size = a.bucket_size();
-			REQUIRE(a.put(std::make_pair(p + 1000, p+1), false) == false);
+			REQUIRE(a.put(TestMap::value_type(p + 1000, p+1), false) == false);
 			if(a.bucket_size() > b_size)
 			{
 				REQUIRE(lock_counter() == rehash_seq);
@@ -290,7 +290,7 @@ TEST_CASE("test_basic_function_in_single_thread", "[Container][Hash][Map][Concur
 		{
 			auto b_size = a.bucket_size();
 			auto p = std::rand() % 1000;
-			REQUIRE(a.put(std::make_pair(p + 2000, p+1), true) == true);
+			REQUIRE(a.put(TestMap::value_type(p + 2000, p+1), true) == true);
 			if(a.bucket_size() > b_size)
 			{
 				REQUIRE(lock_counter() == rehash_seq);
@@ -302,11 +302,11 @@ TEST_CASE("test_basic_function_in_single_thread", "[Container][Hash][Map][Concur
 			lock_counter().clear();
 		}
 
-		REQUIRE(a.put(std::make_pair(0, 0), false) == true);
+		REQUIRE(a.put(TestMap::value_type(0, 0), false) == true);
 		lock_counter().clear();
 		for(std::size_t i = 0; i < 1000; ++i)
 		{
-			REQUIRE(a.put(std::make_pair(i, i+1), false) == true);
+			REQUIRE(a.put(TestMap::value_type(i, i+1), false) == true);
 			REQUIRE(lock_counter() == normal_seq);
 			lock_counter().clear();
 		}
@@ -404,11 +404,11 @@ TEST_CASE("test_map_in_multithread", "[Container][Hash][Map][Concurrency]")
 					}
 					else if(action == 4)
 					{
-						map.put(std::pair<std::size_t, std::size_t>(i, i + 2), true);
+						map.put(std::pair<const std::size_t, std::size_t>(i, i + 2), true);
 					}
 					else if(action == 5)
 					{
-						map.for_each([](std::pair<std::size_t, std::size_t>& m)
+						map.for_each([](std::pair<const std::size_t, std::size_t>& m)
 						{
 							m.second = m.first + 1;
 						});

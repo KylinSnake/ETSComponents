@@ -8,7 +8,7 @@ namespace __hash_map_impl__
 	template<typename T, typename U>
 	struct HashMapExtractor
 	{
-		using KeyType = T;
+		using KeyType = const T;
 		using MappedValueType = U;
 		using ValueType = std::pair<KeyType,MappedValueType>;
 
@@ -32,14 +32,10 @@ namespace __hash_map_impl__
 			return std::move(v.second);
 		}
 
-		inline void set_key(const KeyType& key, ValueType& v) const
+		template<typename ...Args>
+		inline void set_value(ValueType& v, Args... args) const
 		{
-			v.first = key;
-		}
-
-		inline void set_key(KeyType&& key, ValueType& v) const
-		{
-			v.first = std::move(key);
+			v.second = MappedValueType{std::forward<Args>(args)...};
 		}
 
 		template<typename... Args>
