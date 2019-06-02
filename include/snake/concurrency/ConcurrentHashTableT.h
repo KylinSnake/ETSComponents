@@ -6,6 +6,7 @@
 #include <memory>
 #include <cassert>
 #include <utility>
+#include <type_traits>
 #include <snake/concurrency/Atomic.h>
 #include <snake/concurrency/Mutex.h>
 
@@ -74,16 +75,19 @@ namespace snake
 			using const_pointer = const value_type*;
 			using reference = value_type&;
 			using const_reference = const value_type&;
-
 			using node_type = HashTableNode<value_type>;
 			using node_allocator = typename std::allocator_traits<AllocT>::template rebind_alloc<node_type>;
+
 			using mapped_value = typename extractor_type::MappedValueType;
+
+			static_assert(std::is_const<key_type>::value, "Key type of concurrent hash table should be const");
 		
 		private:
 			hasher m_hasher_;
 			key_equal m_equal_;
 			extractor_type m_extractor_;
 			Atomic<size_type> m_num_elements_;
+
 
 			mutable TableMutexT m_table_mutex_;
 			// for buckets mutex, we have to use raw arary pointer,
@@ -452,8 +456,8 @@ namespace snake
 				INSERT_ON_ABSENT = 2
 			};
 
-			template<typename ...Args>
-			UniqueAccessor get_or_create_impl(const key_type& key, INSERT_TYPE type, Args&&... args)
+			template<typename K, typename ...Args>
+			UniqueAccessor get_or_create_impl(K&& key, INSERT_TYPE type, Args&&... args)
 			{
 				if(type != ONLY_GET_EXISTING)
 				{
@@ -467,7 +471,7 @@ namespace snake
 						auto p = get_from_bucket_with_no_lock(key, index);
 						if(p == nullptr && type != ONLY_GET_EXISTING)
 						{
-							p = construct(key, std::forward<Args>(args)...);
+							p = construct(std::forward<K>(key), std::forward<Args>(args)...);
 							add_new_node_with_no_lock(index, p);
 						}
 						else if (p != nullptr && type == INSERT_ON_ABSENT)
@@ -491,9 +495,10 @@ namespace snake
 			}
 
 		public:
-			void clear()
+			size_type clear()
 			{
 				WriteLock<TableMutexT> tl(m_table_mutex_);
+				size_type left = m_num_elements_;
 				for(auto& p : m_buckets_)
 				{
 					while(p != nullptr)
@@ -504,6 +509,7 @@ namespace snake
 						--m_num_elements_;
 					}
 				}
+				return left - m_num_elements_;
 			}
 
 			~ConcurrentHashTableT()
@@ -512,51 +518,62 @@ namespace snake
 				delete[] m_bucket_mutex_array_;
 			}
 			
-			size_type size() const
+			inline size_type size() const
 			{
 				return m_num_elements_;
 			}
 
-			size_type bucket_size() const
+			inline size_type bucket_size() const
 			{
 				return m_buckets_size_;
 			}
 
-			void remove(const key_type& key)
+			template<typename K>
+			inline bool remove(K&& key)
 			{
-				auto p = get(key);
+				auto p = get(std::forward<K>(key));
 				if(p.valid())
 				{
 					p.erase();
+					return true;
 				}
+				return false;
 			}
 
-			inline UniqueAccessor get(const key_type& key)
+			inline bool has(const key_type& key) const
 			{
-				return get_or_create_impl(key, ONLY_GET_EXISTING);
+				return get(key).valid();
 			}
 
-			inline UniqueAccessor get(const key_type& key) const
+			template<typename K>
+			inline UniqueAccessor get(K&& key)
 			{
-				return const_cast<ConcurrentHashTableT*>(this)->get(key);
+				return get_or_create_impl(std::forward<K>(key), ONLY_GET_EXISTING);
 			}
 
-			inline mapped_value get_copy(const key_type& key) const
+			template<typename K>
+			inline UniqueAccessor get(K&& key) const
 			{
-				auto accessor = get(key);
+				return const_cast<ConcurrentHashTableT*>(this)->get(std::forward<K>(key));
+			}
+
+			template<typename K>
+			inline mapped_value get_copy(K&& key) const
+			{
+				auto accessor = get(std::forward<K>(key));
 				return accessor.valid() ? m_extractor_.value(*accessor) : mapped_value{};
 			}
 
-			template<typename ...Args>
-			inline UniqueAccessor get_or_create(const key_type& key, Args&&... args)
+			template<typename K, typename ...Args>
+			inline UniqueAccessor get_or_create(K&& key, Args&&... args)
 			{
-				return get_or_create_impl(key, CREATE_IF_ABSENT, std::forward<Args>(args)...);
+				return get_or_create_impl(std::forward<K>(key), CREATE_IF_ABSENT, std::forward<Args>(args)...);
 			}
 
-			template<typename ...Args>
-			inline UniqueAccessor insert(const key_type& key, Args&&... args)
+			template<typename K, typename ...Args>
+			inline UniqueAccessor insert(K&& key, Args&&... args)
 			{
-				return get_or_create_impl(key, INSERT_ON_ABSENT, std::forward<Args>(args)...);
+				return get_or_create_impl(std::forward<K>(key), INSERT_ON_ABSENT, std::forward<Args>(args)...);
 			}
 
 			template<typename T>
@@ -580,13 +597,33 @@ namespace snake
 				return false;
 			}
 
+			template<typename K, typename V>
+			inline bool put(K&& key, V&& v, bool put_if_absent)
+			{
+				UniqueAccessor p{};
+				if(put_if_absent)
+				{
+					p = get_or_create(std::forward<K>(key));
+				}
+				else
+				{
+					p = get(std::forward<K>(key));
+				}
+				if(p.valid())
+				{
+					m_extractor_.set_value(*p , std::forward<V>(v));
+					return true;
+				}
+				return false;
+			}
+
 			inline UniqueIterator unique_iterator() const
 			{
 				return UniqueIterator{const_cast<ConcurrentHashTableT*>(this)};
 			}
 
 			template<typename Func>
-			inline void for_each(Func&& p)
+			inline void for_each(Func&& p) const
 			{
 				auto it = unique_iterator();
 				it.next();
@@ -598,7 +635,7 @@ namespace snake
 			}
 
 			template<typename Pred>
-			inline UniqueAccessor find_if(Pred&& p)
+			inline UniqueAccessor find_if(Pred&& p) const
 			{
 				auto it = unique_iterator();
 				it.next();

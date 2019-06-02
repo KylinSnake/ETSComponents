@@ -1,5 +1,6 @@
 #include <catch.hpp>
 #include <snake/concurrency/ConcurrentHashMap.h>
+#include <snake/concurrency/ConcurrentHashSet.h>
 #include <snake/concurrency/Mutex.h>
 #include <snake/concurrency/Thread.h>
 #include <snake/concurrency/ConditionVariable.h>
@@ -313,7 +314,7 @@ TEST_CASE("test_basic_function_in_single_thread", "[Container][Hash][Map][Concur
 		
 		{
 			lock_counter().clear();
-			auto key = std::rand() % 1000;
+			TestMap::key_type key = std::rand() % 1000;
 			auto accessor = a.get(key);
 			REQUIRE(accessor.valid());
 			REQUIRE(lock_counter() == normal_lock_seq);
@@ -336,7 +337,7 @@ TEST_CASE("test_basic_function_in_single_thread", "[Container][Hash][Map][Concur
 			lock_counter().clear();
 		
 			v1 = a.size();
-			auto it = a.get(100);
+			auto it = a.get(TestMap::key_type{100});
 			REQUIRE(it.valid());
 			it.erase();
 			REQUIRE(it.valid() == false);
@@ -428,7 +429,7 @@ TEST_CASE("test_map_in_multithread", "[Container][Hash][Map][Concurrency]")
 		}
 	};
 
-	log_alloc = true;
+	log_alloc = false;
 	signal = 2;
 	std::vector<Thread> v;
 	for(size_t i = 0 ; i < threads_num; ++i)
@@ -462,5 +463,83 @@ TEST_CASE("test_map_in_multithread", "[Container][Hash][Map][Concurrency]")
 		REQUIRE(alloc_counter().bucket_alloc - alloc_counter().bucket_dealloc == map.bucket_size());
 		// end of verification
 	}
-		
+}
+
+TEST_CASE("test_hash_set_in_single_thread", "[Container][Hash][Set][Concurrency]")
+{
+	using TEST_SET = ConcurrentHashSet<size_t, std::hash<size_t>, std::equal_to<size_t>, 
+		std::allocator<const size_t>, LockFreeSharedMutex, LockFreeMutex>;
+	TEST_SET set{};
+	for(size_t i = 0; i < 1000; ++i)
+	{
+		REQUIRE(set.insert(i) == true);
+	}
+	REQUIRE(set.size() == 1000);
+	for(size_t i = 0; i < 1000; ++i)
+	{
+		size_t  p =std::rand() % 2000;
+		if (p < 1000)
+		{
+			REQUIRE(set.has(p));
+			REQUIRE(!set.insert(p));
+		}
+		else
+		{
+			REQUIRE(!set.has(p));
+		}
+	}
+	for(size_t i = 0; i < 500; ++i)
+	{
+		set.remove(i*2);
+		REQUIRE(!set.has(i*2));
+	}
+	REQUIRE(set.size() == 500);
+	set.clear();
+	REQUIRE(set.size() == 0);
+
+	Atomic<size_t> add{0};
+	Atomic<size_t> remove{0};
+	Atomic<size_t> iterations{0};
+	auto e = [&add, &remove, &set, &iterations]()
+	{
+		for(size_t i = 0 ; i < 5000; ++i)
+		{
+			size_t p = std::rand() % 5000;
+			if (p > 4500)
+			{
+				remove += set.clear();
+			}
+			else if(p > 3500)
+			{
+				set.for_each([&iterations](const size_t& t)
+				{
+					if(t<1000)
+					{
+						++iterations;
+					}
+				});
+			}
+			if(set.insert(p))
+			{
+				++add;
+			}
+		}
+		for(size_t i = 0; i < 2000; ++i)
+		{
+			size_t p = std::rand() % 5000;
+			if(set.remove(p))
+			{
+				++remove;
+			}
+		}
+	};
+
+	std::vector<Thread> threads;
+	threads.push_back(Thread{e});
+	for(auto& t: threads)
+	{
+		t.join();
+	}
+	REQUIRE(set.size() == add - remove);
+	REQUIRE(iterations > 0);
 }

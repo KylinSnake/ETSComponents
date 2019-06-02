@@ -33,15 +33,15 @@ namespace __hash_map_impl__
 		}
 
 		template<typename ...Args>
-		inline void set_value(ValueType& v, Args... args) const
+		inline void set_value(ValueType& v, Args&&... args) const
 		{
 			v.second = MappedValueType{std::forward<Args>(args)...};
 		}
 
-		template<typename... Args>
-		inline ValueType extract_ctor_params(const KeyType& key, Args... args)
+		template<typename K, typename... Args>
+		inline ValueType extract_ctor_params(K&& key, Args&&... args)
 		{
-			return ValueType(KeyType{key}, MappedValueType{std::forward<Args>(args)...});
+			return ValueType(KeyType{std::forward<K>(key)}, MappedValueType{std::forward<Args>(args)...});
 		}
 	};
 }

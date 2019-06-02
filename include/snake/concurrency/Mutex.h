@@ -49,6 +49,7 @@ namespace snake
 	// Std Requirement: SharedMutex
 	class LockFreeSharedMutex
 	{
+	public:
 		constexpr LockFreeSharedMutex() noexcept = default;
 		~LockFreeSharedMutex() = default;
 		LockFreeSharedMutex(const LockFreeMutex&) = delete;

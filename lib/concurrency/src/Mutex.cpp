@@ -2,6 +2,8 @@
 
 namespace snake
 {
+	// LockFreeMutex
+	
 	void LockFreeMutex::lock()
 	{
 		while(flag_.test_and_set());
@@ -16,6 +18,8 @@ namespace snake
 	{
 		return flag_.clear();
 	}
+
+	// LockFreeSharedMutex
 
 	void LockFreeSharedMutex::unlock()
 	{

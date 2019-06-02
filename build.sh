@@ -104,8 +104,7 @@ if [ ! -d ${BUILD_FOLDER} ]; then
   mkdir -p ${BUILD_FOLDER}
 fi
 
-TEST_COV_PARAM=
-
+TEST_COV_PARAM="-DTEST_COVERAGE=off"
 if [ $TEST_COV -eq 1 ];then
 	TEST_COV_PARAM="-DTEST_COVERAGE=on"
 fi
