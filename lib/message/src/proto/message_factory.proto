@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+import "base.proto";
+
+package snake.proto;
+
+message MessageFactory
+{
+	message Item
+	{
+		oneof tag
+		{
+			TestMessage TestMessage = 1;
+			MessageVersion MessageVersion = 2;
+			ControlMessage ControlMessage = 3;
+			DataMessage DataMessage = 4;
+			RequestMessage RequestMessage = 5;
+			ResponseMessage ResponseMessage = 6;
+		}
+	}
+
+	repeated Item item = 1;
+}
