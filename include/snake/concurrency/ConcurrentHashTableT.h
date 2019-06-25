@@ -6,6 +6,7 @@
 #include <memory>
 #include <cassert>
 #include <utility>
+#include <functional>
 #include <type_traits>
 #include <snake/concurrency/Atomic.h>
 #include <snake/concurrency/Mutex.h>
@@ -78,7 +79,7 @@ namespace snake
 			using node_type = HashTableNode<value_type>;
 			using node_allocator = typename std::allocator_traits<AllocT>::template rebind_alloc<node_type>;
 
-			using mapped_value = typename extractor_type::MappedValueType;
+			using mapped_type = typename extractor_type::MappedValueType;
 
 			static_assert(std::is_const<key_type>::value, "Key type of concurrent hash table should be const");
 		
@@ -260,6 +261,7 @@ namespace snake
 									p = p->m_next_;
 									break;
 								}
+								p = p->m_next_;
 							}
 						}
 						m_table_->destroy(m_node_);
@@ -495,7 +497,7 @@ namespace snake
 			}
 
 		public:
-			size_type clear()
+			size_type clear(const std::function<void()>& f)
 			{
 				WriteLock<TableMutexT> tl(m_table_mutex_);
 				size_type left = m_num_elements_;
@@ -509,7 +511,17 @@ namespace snake
 						--m_num_elements_;
 					}
 				}
+				if(f)
+				{
+					f();
+				}
 				return left - m_num_elements_;
+			}
+
+			size_type clear()
+			{
+				static std::function<void()> f;
+				return clear(f);
 			}
 
 			~ConcurrentHashTableT()
@@ -558,10 +570,10 @@ namespace snake
 			}
 
 			template<typename K>
-			inline mapped_value get_copy(K&& key) const
+			inline mapped_type get_copy(K&& key) const
 			{
 				auto accessor = get(std::forward<K>(key));
-				return accessor.valid() ? m_extractor_.value(*accessor) : mapped_value{};
+				return accessor.valid() ? m_extractor_.value(*accessor) : mapped_type{};
 			}
 
 			template<typename K, typename ...Args>

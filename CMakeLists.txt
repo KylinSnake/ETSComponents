@@ -31,6 +31,7 @@ add_subdirectory(lib/core)
 add_subdirectory(lib/message)
 add_subdirectory(lib/concurrency)
 add_subdirectory(lib/util)
+add_subdirectory(lib/db)
 
 add_subdirectory(app)
 
